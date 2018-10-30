@@ -1,0 +1,40 @@
+.carousel{
+    
+    
+    height: 500px;
+    margin-bottom: 50px;
+}
+
+.item{
+
+    height: 500px;
+    background-color: red;
+    
+
+}
+.carousel-inner>.item>img, .carousel-inner>.item>a>img {
+
+    position: absolute;
+    height: 500px;
+    min-width: 100%;
+    top:0;
+    left: 0;
+
+}
+.carousel-caption{
+
+    margin-top: 50%;
+}
+
+
+.divider{
+
+    margin:40px 0px;
+}
+
+.micky{
+
+    padding-left:20px;
+    text-align: center;
+
+}

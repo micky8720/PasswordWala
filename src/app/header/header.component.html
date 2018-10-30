@@ -1,0 +1,72 @@
+<head>
+
+  <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="2nmghe5pfwtnno5"></script>
+
+</head>
+<nav class="navbar navbar-inverse navbar-fixed-top" *ngIf="!isUserLoggedIn">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#"><i class="fas fa-unlock-alt"></i> Password Wala</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+    
+      <ul class="nav navbar-nav navbar-right">
+        
+        <li><a href="#"><i class="fas fa-clone"></i> How It Works</a></li>
+       
+        <li><a href="#"><i class="fab fa-quinscape"></i>FAQs</a></li>
+        
+        <li><a href="#"><i class="fas fa-question"></i> Help</a></li>
+        <li><a  (click)="googleLogin()"><i class="fas fa-user-plus"></i> Sign Up</a></li>
+         <li><a href="https://dl.dropboxusercontent.com/s/deroi5nwm6u7gdf/advice.png" class="dropbox-saver"></a></li>
+        <!-- <li><a href="#"> Welcome, {{username}}!</a> </li> -->
+       
+      </ul>
+    </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+<!-- if user has logged in -->
+
+<nav class="navbar navbar-inverse navbar-fixed-top" *ngIf="isUserLoggedIn">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#"><i class="fas fa-unlock-alt"></i> Password Wala</a>
+      </div>
+  
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          
+          <li><a href="https://dl.dropboxusercontent.com/s/deroi5nwm6u7gdf/advice.png"  class="dropbox-saver"></a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+        
+            <li><a href="#"> Welcome, {{username}}</a></li>
+            <li><a (click)="logOut()">Log out</a></li>
+            <li><a href="https://dl.dropboxusercontent.com/s/deroi5nwm6u7gdf/advice.png"  class="dropbox-saver"></a></li>
+            
+        </ul>
+        
+      </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+  </nav>
