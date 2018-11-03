@@ -3,6 +3,7 @@ import { log } from 'util';
 import { Dropbox } from 'dropbox';
 import { HeaderComponent } from '../header/header.component';
 import { Profile } from 'selenium-webdriver/firefox';
+import { Driver } from 'selenium-webdriver/safari';
 
 
 
@@ -139,72 +140,95 @@ export class ProfileComponent implements OnInit {
 
   public downloadcsv(data: any, exportFileName: string) {
     let csvData = this.convertToCSV(data);
-    let blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+    // let blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
 
-    console.log("blob su che..."+blob.type)
+    // console.log("blob su che..."+blob.type)
     
 
     // File Upload Code
+    // var fileContent = csvData; // As a sample, upload a text file.
+    // console.log("fileContent :: " + Object.values(fileContent));
+    // var file = new Blob([fileContent], {type: 'text/csv'});
+    // var metadata = {
+    //     'title': 'passwordwala.csv',
+    //     'name': 'passwordwala', // Filename at Google Drive
+    //     'mimeType': 'text/csv', // mimeType at Google Drive
+    //     'parents': ['### folder ID ###'], // Folder ID at Google Drive
+    // };
+    
+    // var accessToken = this.token; // Here gapi is used for retrieving the access token.
+    // console.log("accessToken :: " + accessToken);
+    // var form = new FormData();
+    // form.append('metadata', new Blob([JSON.stringify(metadata)]));
+    // // form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
+    // console.log("Form data after metadata :: " , form.getAll('metadata'));
+    // form.append('file', file);
+    // console.log("File Data :: ", file);
+    // console.log("Form Data after appending file:: ", form.getAll('file'));
+    // console.log("Form Data :: " , form.getAll('file'));
+    
+    // var xhr = new XMLHttpRequest();
+    // console.log("Just Before the link::::");
+    
+    // xhr.open('post', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id');
+    
+    // xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+    // xhr.responseType = 'json';
+    // console.log("XHR :: " + Object.values(xhr));
+    // xhr.onload = () => {
+    //     console.log(xhr.response.id); // Retrieve uploaded file ID.
+    // };
+    // //xhr.send(file);
+    // console.log("Form Data just before sending:: " , form.getAll('file'));
+    // xhr.send(form);
+    // console.log("Form Data after sending:: " , form.getAll('file'));
+    // console.log("success for Google Drive.");
+    
+   
+    
+   // console.log("Khali Dropbox nu karyu check ahiya...");
+//  console.log("before the get request...");
+ 
+//    xhr.open("GET", "https://www.googleapis.com/drive/v3/files/"+'1A1RguZpYFLyO9qEs-EnnrpikIpzAbDcZs3Gcsc7Z4nE', true);
+//     xhr.setRequestHeader('Authorization','Bearer '+accessToken);
+//     xhr.onload = function(){
+//         console.log(xhr);
+//     }
+//     xhr.send('alt=media');
+//     console.log("after the get request...");
+    
+    
+
+
+
+
+
     var fileContent = csvData; // As a sample, upload a text file.
-    console.log("fileContent :: " + Object.values(fileContent));
     var file = new Blob([fileContent], {type: 'text/csv'});
     var metadata = {
-        'title': 'passwordwala.csv',
-        'name': 'passwordwala', // Filename at Google Drive
-        'mimeType': 'text/csv', // mimeType at Google Drive
-        'parents': ['### folder ID ###'], // Folder ID at Google Drive
-    };
-
-    var accessToken = this.token; // Here gapi is used for retrieving the access token.
-    console.log("accessToken :: " + accessToken);
+      'name': 'passwordwala.csv', // Filename at Google Drive
+      'mimeType': 'text/csv', // mimeType at Google Drive
+      //'parents': ['### folder ID ###'], // Folder ID at Google Drive
+    } ;
+    
+    var accessToken = this.token ;
+     // Here gapi is used for retrieving the access token.
+    console.log("accesstoken here:"+accessToken);
+    
     var form = new FormData();
     form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
     form.append('file', file);
-    
+
     var xhr = new XMLHttpRequest();
     xhr.open('post', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id');
     xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
     xhr.responseType = 'json';
-    console.log("XHR :: " + Object.values(xhr));
     xhr.onload = () => {
         console.log(xhr.response.id); // Retrieve uploaded file ID.
     };
-    xhr.send(file);
-   //xhr.send(form);
-    console.log("success for Google Drive.");
-   
-    
-    console.log("Khali Dropbox nu karyu check ahiya...");
-    
-
-
-
-
-
-    // var fileContent = 'sample text'; // As a sample, upload a text file.
-    // var file = new Blob([fileContent], {type: 'text/plain'});
-    // var metadata = {
-    //   'name': 'sampleName', // Filename at Google Drive
-    //   'mimeType': 'text/plain', // mimeType at Google Drive
-    //   //'parents': ['### folder ID ###'], // Folder ID at Google Drive
-    // } ;
-    
-  //   var accessToken = ;
-  //    // Here gapi is used for retrieving the access token.
-  //   console.log("accesstoken here:"+accessToken);
-    
-  //   var form = new FormData();
-  //   form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
-  //   form.append('file', file);
-
-  // var xhr = new XMLHttpRequest();
-  // xhr.open('post', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id');
-  // xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-  // xhr.responseType = 'json';
-  // xhr.onload = () => {
-  //   console.log(xhr.response.id); // Retrieve uploaded file ID.
-  // };
-  // xhr.send(form);
+    xhr.send(form);
+    console.log("done uploading..");
+  
 
 
   
