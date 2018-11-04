@@ -26,6 +26,7 @@ export class ProfileComponent implements OnInit {
   public message;
   public email;
   public token;
+  public demo;
   
   //@ViewChild(HeaderComponent) child;
   constructor() { }
@@ -106,7 +107,6 @@ export class ProfileComponent implements OnInit {
     var accessToken = this.token;
     console.log("before the get request...");
     var fileID;
-    var demo ;
     var xhr1 = new XMLHttpRequest();
     xhr1.open('GET', 'https://www.googleapis.com/drive/v3/files/');
     console.log("111");
@@ -129,7 +129,7 @@ export class ProfileComponent implements OnInit {
                 var items = Object.keys(exctractedJSON[key]);
                 console.log("1");
                 items.forEach(function(item) {
-                    console.log("2" + item);
+                  console.log("2" + item);
                   var value = exctractedJSON[key][item];
                   console.log("3" + value);
                   console.log("Final " + key+': '+item+' = '+value);
@@ -137,8 +137,9 @@ export class ProfileComponent implements OnInit {
                   if(value.name == "passwordwala.csv")
                   {
                     console.log("5555");
-                      fileID = value.id;
-                      console.log("Passwordwala FileID :: " + fileID);
+                    fileID = value.id;
+                    console.log("Passwordwala FileID :: " + fileID);
+                      
                   }
                   console.log("6666");
                 });
@@ -163,22 +164,22 @@ export class ProfileComponent implements OnInit {
           xhr2.onload = () => {
               console.log("1313");
               console.log("Getting file data from passwordwala:"+xhr2.response); 
-              demo = xhr2.response+"demo che";
-              console.log(demo);
+              this.demo = xhr2.response;
+              console.log("demo variable in onload method: "+this.demo);
               
               //console.log(typeof (xhr2.response));
               
           }
           console.log("1414");
           xhr2.send();
-          console.log("onload ni bahar...");
+          console.log("onload ni bahar..."+ this.demo);
         
     };
     console.log("1515");
     xhr1.send();
 
     console.log("done downloading .." + xhr1.responseText);
-    console.log("demo" + demo);
+    console.log("demo: " + this.demo);
     
 
   }
@@ -311,18 +312,18 @@ export class ProfileComponent implements OnInit {
     form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
     form.append('file', file);
 
-    // var xhr = new XMLHttpRequest();
-    // xhr.open('post', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id');
-    // xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-    // xhr.responseType = 'text';
-    // xhr.onload = () => {
-    //     console.log("Inside onload of Post :: ");
-    //     console.log("Inside id:"+xhr.response.id); // Retrieve uploaded file ID.
-    // };
+    var xhr = new XMLHttpRequest();
+    xhr.open('post', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+    xhr.responseType = 'text';
+    xhr.onload = () => {
+        console.log("Inside onload of Post :: ");
+        console.log("Inside id:"+xhr.response.id); // Retrieve uploaded file ID.
+    };
     
-    // console.log("uploaded File Id :: " + xhr.response.id);
-    // xhr.send(form);
-    // console.log("done uploading.."+ xhr.response.id);
+    console.log("uploaded File Id :: " + xhr.response.id);
+    xhr.send(form);
+    console.log("done uploading.."+ xhr.response.id);
 
     console.log("before the get request...");
     var fileID;
