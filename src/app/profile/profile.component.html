@@ -13,7 +13,7 @@
                             <a (click)="onClick('addPassword')">Add Password</a>
                         </li>
                         <li>
-                            <a href="#">Show Password</a>
+                            <a (click)="onClick('showPassword')" >Show Password</a>
                         </li>
                         <li>
                             <a (click)="logOut()">Logout</a>
@@ -38,6 +38,19 @@
                     </div>
 
 
+                    <div *ngIf="showPassword">
+                        <div id="page-content-wrapper">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-lg-12" >
+                                            <button type="button" class="btn btn-success" (click)="showPasswordMethod()">Show My Password</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+
+
                     <div *ngIf="addPassword">
                                 <div id="page-content-wrapper">
                                         <div class="container-fluid">
@@ -59,22 +72,23 @@
                                                                                   <div class="form-group">
                                                                                                 <label for="alterEgo">Password</label>
                                                                                                 <input #password type="text" class="form-control" id="password" [value]="randomPassword">
-                                                                                              </div>
+                                                                                  </div>
                                                                              
-                                                                                <button type="button" class="btn btn-success" (click)="generatePassword()">Generate Random Password</button>
-                                                                                <button type="submit" class="btn btn-success" (click)="submitData(applicationname.value,username.value,password.value)">Submit</button>
-                                                                                <a href="https://dl.dropboxusercontent.com/s/deroi5nwm6u7gdf/advice.png" class="dropbox-saver"></a>
-                                                                               <hr> <a href="https://dl.dropboxusercontent.com/s/deroi5nwm6u7gdf/advice.png" class="dropbox-saver">test</a>
+                                                                                    <button type="button" class="btn btn-success" (click)="generatePassword()">Generate Random Password</button>
+                                                                                    <button type="submit" class="btn btn-success" (click)="submitData(applicationname.value,username.value,password.value)">Submit</button>
+                                                                                    <a href="https://dl.dropboxusercontent.com/s/deroi5nwm6u7gdf/advice.png" class="dropbox-saver"></a>
+                                                                                    <hr> 
+                                                                                    <a href="https://dl.dropboxusercontent.com/s/deroi5nwm6u7gdf/advice.png" class="dropbox-saver">test</a>
                                                                                 </form>
                                                                                     
-                                                                            </div>
+                                                                </div>
                                                 </div>
                                             </div>
                                             
                                         </div>
 
-                                    </div>
-                                    </div>   
+                                </div>
+                    </div>   
             </div>
                 
             

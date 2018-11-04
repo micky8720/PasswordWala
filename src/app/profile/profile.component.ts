@@ -19,6 +19,7 @@ export class ProfileComponent implements OnInit {
 
   public myProfile:boolean;
   public addPassword:boolean;
+  public showPassword:boolean;
   public randomPassword="";
   public username;
   public userData;
@@ -68,12 +69,20 @@ export class ProfileComponent implements OnInit {
     if(field==="myProfile"){
       this.myProfile=true;
       this.addPassword = false;
+      this.showPassword = false;
     }
     if(field==="addPassword"){
       this.myProfile = false;
-      this.addPassword=true;
+      this.addPassword=true; 
+      this.showPassword = false;
       
-      
+    }
+    if(field=="showPassword"){
+        this.showPassword = true;
+        this.addPassword = false;
+        this.myProfile = false;
+
+
     }
 
     console.log(this.myProfile);
@@ -90,6 +99,89 @@ export class ProfileComponent implements OnInit {
     this.randomPassword = pass;
     return pass;
 }
+    
+
+  showPasswordMethod(){
+    
+    var accessToken = this.token;
+    console.log("before the get request...");
+    var fileID;
+    var demo ;
+    var xhr1 = new XMLHttpRequest();
+    xhr1.open('GET', 'https://www.googleapis.com/drive/v3/files/');
+    console.log("111");
+    
+    xhr1.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+    console.log("22");
+    xhr1.responseType = 'text';
+    console.log("33");
+    xhr1.onload = () => {
+        console.log("44");
+        console.log("Inside file data:"+xhr1.responseText); // Retrieve uploaded file ID.
+        var exctractedJSON = JSON.parse(xhr1.responseText);
+        var group = xhr1.responseText;
+        console.log("Posts :: " + exctractedJSON.files[0]);
+        var keys = Object.keys(exctractedJSON);
+        keys.forEach(function(key) {
+            if(key == 'files')
+            {
+                console.log("person is files :: " + exctractedJSON[key] );
+                var items = Object.keys(exctractedJSON[key]);
+                console.log("1");
+                items.forEach(function(item) {
+                    console.log("2" + item);
+                  var value = exctractedJSON[key][item];
+                  console.log("3" + value);
+                  console.log("Final " + key+': '+item+' = '+value);
+                  console.log("4" + value.name);
+                  if(value.name == "passwordwala.csv")
+                  {
+                    console.log("5555");
+                      fileID = value.id;
+                      console.log("Passwordwala FileID :: " + fileID);
+                  }
+                  console.log("6666");
+                });
+                console.log("7777");
+            }
+            console.log("8888");
+          });
+
+
+
+          console.log("Getting File data....... ");
+
+          var xhr2 = new XMLHttpRequest();
+          console.log("99");
+          xhr2.open('GET', 'https://www.googleapis.com/drive/v3/files/'+fileID+'?alt=media');
+          console.log("101010");
+          xhr2.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+          console.log("1111");
+          xhr2.responseType = 'text';
+          console.log("1212");
+          
+          xhr2.onload = () => {
+              console.log("1313");
+              console.log("Getting file data from passwordwala:"+xhr2.response); 
+              demo = xhr2.response+"demo che";
+              console.log(demo);
+              
+              //console.log(typeof (xhr2.response));
+              
+          }
+          console.log("1414");
+          xhr2.send();
+          console.log("onload ni bahar...");
+        
+    };
+    console.log("1515");
+    xhr1.send();
+
+    console.log("done downloading .." + xhr1.responseText);
+    console.log("demo" + demo);
+    
+
+  }
 
   submitData(applicationname, username, password){
 
@@ -236,9 +328,14 @@ export class ProfileComponent implements OnInit {
     var fileID;
     var xhr1 = new XMLHttpRequest();
     xhr1.open('GET', 'https://www.googleapis.com/drive/v3/files/');
+    console.log("111");
+    
     xhr1.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+    console.log("22");
     xhr1.responseType = 'text';
+    console.log("33");
     xhr1.onload = () => {
+        console.log("44");
         console.log("Inside file data:"+xhr1.responseText); // Retrieve uploaded file ID.
         var exctractedJSON = JSON.parse(xhr1.responseText);
         var group = xhr1.responseText;
@@ -258,26 +355,36 @@ export class ProfileComponent implements OnInit {
                   console.log("4" + value.name);
                   if(value.name == "passwordwala.csv")
                   {
+                    console.log("5555");
                       fileID = value.id;
                       console.log("Passwordwala FileID :: " + fileID);
                   }
+                  console.log("6666");
                 });
+                console.log("7777");
             }
-
+            console.log("8888");
           });
 
 
 
-          console.log("Getting File data :: ");
+          console.log("Getting File data....... ");
 
           var xhr2 = new XMLHttpRequest();
+          console.log("99");
           xhr2.open('GET', 'https://www.googleapis.com/drive/v3/files/'+fileID+'?alt=media');
+          console.log("101010");
           xhr2.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+          console.log("1111");
           xhr2.responseType = 'text';
+          console.log("1212");
           xhr2.onload = () => {
-              console.log("Getting file data:"+xhr2.response); // Retrieve uploaded file ID.
+            console.log("1313");
+              console.log("Getting file data from passwordwala:"+xhr2.response); 
           }
+          console.log("1414");
           xhr2.send();
+          console.log("onload ni bahar...");
         // names.forEach(function(name) {
         //     //var items = Object.keys(xhr1.responseText[name]);
         //     //console.log("Loop name :: " + name);
@@ -288,7 +395,7 @@ export class ProfileComponent implements OnInit {
         //     }
         //   });
     };
-    
+    console.log("1515");
     xhr1.send();
 
     console.log("done downloading .." + xhr1.responseText);
