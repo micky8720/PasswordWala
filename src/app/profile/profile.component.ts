@@ -27,6 +27,7 @@ export class ProfileComponent implements OnInit {
   public message;
   public email;
   public token;
+  public token_db;
   public dataFromDrive="";
   
   
@@ -44,9 +45,9 @@ export class ProfileComponent implements OnInit {
    }
    ngOnInit() {
 
-     const dropbox_token = token_dropbox;
-     console.log("Profile ts ma db nu token:" + dropbox_token);
-     
+     const demo = token_dropbox;
+     console.log("Profile ts ma db nu token:" + demo);
+     this.token_db = demo;
 
    }
 
@@ -55,6 +56,7 @@ export class ProfileComponent implements OnInit {
   }
 
    getToken($event){
+       
     this.token = $event;
   }
 
@@ -265,8 +267,12 @@ export class ProfileComponent implements OnInit {
     } ;
     
     var accessToken = this.token ;
+    var accessToken_db = this.token_db;
      // Here gapi is used for retrieving the access token.
-    console.log("accesstoken here:"+accessToken);
+    console.log("accesstoken google after click:"+accessToken);
+    console.log("dropbox access token after click:"+accessToken_db);
+    
+    //Upload to Dropbox...
 
 
     //first getting the file from google drive if exists any...
