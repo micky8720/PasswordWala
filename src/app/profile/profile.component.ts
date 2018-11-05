@@ -4,6 +4,7 @@ import { Dropbox } from 'dropbox';
 import { HeaderComponent } from '../header/header.component';
 import { Profile } from 'selenium-webdriver/firefox';
 import { Driver } from 'selenium-webdriver/safari';
+import { parseCommandLine } from 'typescript';
 //import { token_dropbox} from './../../assets/js/index'
 
 
@@ -29,6 +30,7 @@ export class ProfileComponent implements OnInit {
   public token;
   public token_db;
   public dataFromDrive="";
+  public dataFromDropbox="";
   
   
   //@ViewChild(HeaderComponent) child;
@@ -126,6 +128,7 @@ export class ProfileComponent implements OnInit {
   showPasswordMethod(){
     
     var accessToken = this.token;
+    var accessToken_db = this.token_db;
     var demo = "";
     console.log("before the get request...");
     var fileID;
@@ -203,7 +206,37 @@ export class ProfileComponent implements OnInit {
 
     console.log("done downloading .." + xhr1.responseText);
     console.log("dataFromDrive: " + this.dataFromDrive);
+
+    //Get From Dropbox
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'text';
+
+    xhr.onload = () => {
+        
+    if (xhr.status === 200) {
+    //   var blob = new Blob([xhr.response], {type: ’application/octet-stream’});
+    //   FileSaver.saveAs(blob, file.name, true);
+      
+      console.log("Got file from dropbox");
+      console.log("Response ma su aave che:"+xhr.response);
+      this.dataFromDropbox = xhr.response;
+      
+    }
     
+    else {
+      var errorMessage = xhr.response || 'Unable to download file';
+      // Upload failed. Do something here with the error.
+      console.log("Error getting from dropbox:"+errorMessage);
+      
+    }
+  };
+  
+  xhr.open('POST', 'https://content.dropboxapi.com/2/files/download');
+  xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken_db);
+  xhr.setRequestHeader('Dropbox-API-Arg', JSON.stringify({
+    path: '/passwordwala.csv'
+  }));
+  xhr.send();
 
   }
 
@@ -352,7 +385,7 @@ export class ProfileComponent implements OnInit {
     
     console.log("uploaded File Id :: " + xhr.response.id);
     xhr.send(form);
-    console.log("done uploading.."+ xhr.response.id);
+    console.log("done drive uploading.."+ xhr.response.id);
 
     
    
@@ -363,14 +396,15 @@ export class ProfileComponent implements OnInit {
     xhr.onload = function() {
         if (xhr.status === 200) {
             var fileInfo = JSON.parse(xhr.response);
-            console.log("Upload sucees:"+fileInfo);
+            console.log("Upload sucees DropBox:"+fileInfo);
+            
             
             // Upload succeeded. Do something here with the file info.
         }
         else {
             var errorMessage = xhr.response || 'Unable to upload file';
             // Upload failed. Do something here with the error.
-            console.log("error:" +errorMessage);
+            console.log("Dropbox upload error:" +errorMessage);
             
         }
     };
