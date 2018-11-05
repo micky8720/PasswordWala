@@ -1,8 +1,12 @@
-<head>
 
-  <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="2nmghe5pfwtnno5"></script>
 
-</head>
+  <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="zn5ube43ez63mee"></script>
+  <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@7/dist/polyfill.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.js"></script>
+  <!-- <script src="/__build__/Dropbox-sdk.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dropbox.js/4.0.12/Dropbox-sdk.min.js"></script>
+  <script src="assets/js/utils.js"></script>
+  
 <nav class="navbar navbar-inverse navbar-fixed-top" *ngIf="!isUserLoggedIn">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -30,8 +34,9 @@
         
         <li><a href="#"><i class="fas fa-question"></i> Help</a></li>
         <li><a  (click)="googleLogin()"><i class="fas fa-user-plus"></i> Sign Up</a></li>
-         <li><a href="https://dl.dropboxusercontent.com/s/deroi5nwm6u7gdf/advice.png" class="dropbox-saver"></a></li>
-        <!-- <li><a href="#"> Welcome, {{username}}!</a> </li> -->
+
+         <li><a href="https://www.dropbox.com/oauth2/authorize?response_type=token&client_id=txyblooxj95iz5h&redirect_uri=http://localhost:4200/profilepage" id="authlink" class="button">Authenticate</a></li>
+         <!-- <li><a href="#"> Welcome, {{username}}!</a> </li> -->
        
       </ul>
     </div><!-- /.navbar-collapse -->
@@ -57,16 +62,76 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
           
-          <li><a href="https://dl.dropboxusercontent.com/s/deroi5nwm6u7gdf/advice.png"  class="dropbox-saver"></a></li>
+          
         </ul>
         <ul class="nav navbar-nav navbar-right">
         
             <li><a href="#"> Welcome, {{username}}</a></li>
             <li><a (click)="logOut()">Log out</a></li>
-            <li><a href="https://dl.dropboxusercontent.com/s/deroi5nwm6u7gdf/advice.png"  class="dropbox-saver"></a></li>
+            <li><li><a href="https://www.dropbox.com/oauth2/authorize?response_type=token&client_id=txyblooxj95iz5h&redirect_uri=http://localhost:4200/profilepage" id="authlink" class="button">Login With DropBox</a></li>
+            
             
         </ul>
         
-      </div><!-- /.navbar-collapse -->
-      </div><!-- /.container-fluid -->
+      </div>
+      </div>
   </nav>
+
+  <script>
+    console.log("Script Running or not...");
+    
+    var CLIENT_ID = '2nmghe5pfwtnno5';
+    // Parses the url and gets the access token if it is in the urls hash
+    function print(){
+                    console.log("test test test");
+      
+                }
+                print();
+    function getAccessTokenFromUrl() {
+      console.log("token: "+utils.parseQueryString(window.location.hash).access_token);
+      
+     return utils.parseQueryString(window.location.hash).access_token;
+    }
+    // If the user was just redirected from authenticating, the urls hash will
+    // contain the access token.
+    function isAuthenticated() {
+      return !!getAccessTokenFromUrl();
+    }
+    // Render a list of items to #files
+    function renderItems(items) {
+      var filesContainer = document.getElementById('files');
+      items.forEach(function(item) {
+        var li = document.createElement('li');
+        li.innerHTML = item.name;
+        filesContainer.appendChild(li);
+      });
+    }
+    // This example keeps both the authenticate and non-authenticated setions
+    // in the DOM and uses this function to show/hide the correct section.
+    function showPageSection(elementId) {
+      document.getElementById(elementId).style.display = 'block';
+    }
+    if (isAuthenticated()) {
+      console.log("in if authenticated");
+      
+      showPageSection('authed-section');
+      // Create an instance of Dropbox with the access token and use it to
+      // fetch and render the files in the users root directory.
+      var dbx = new Dropbox.Dropbox({ accessToken: getAccessTokenFromUrl() });
+      dbx.filesListFolder({path: ''})
+        .then(function(response) {
+          renderItems(response.entries);
+        })
+        .catch(function(error) {
+          console.error(error);
+        });
+    } else {
+      showPageSection('pre-auth-section');
+      // Set the login anchors href using dbx.getAuthenticationUrl()
+      var dbx = new Dropbox.Dropbox({ clientId: CLIENT_ID });
+      console.log("dbx is :" + dbx);
+      
+      var authUrl = dbx.getAuthenticationUrl('http://localhost:4200/homecomponent/');
+      document.getElementById('authlink').href = authUrl;
+    }
+  </script>

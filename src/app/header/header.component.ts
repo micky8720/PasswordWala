@@ -62,9 +62,10 @@ export class HeaderComponent implements OnInit {
   logOut(){
 
 
-   //Code For Logout goes here...
+   
   }
 
+  
   // public onClick(sp){
 
   //   console.log("In Method");

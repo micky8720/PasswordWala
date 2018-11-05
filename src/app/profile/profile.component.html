@@ -1,4 +1,5 @@
-<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="2nmghe5pfwtnno5"></script>
+<script type="text/javascript" src="assets/js/index.js"></script>
+
 <app-header (sendUserdata)="getUserdata($event)" (sendToken)="getToken($event)" > </app-header>
 
                                                                                 
@@ -23,6 +24,7 @@
             
                      
                 </div>
+                
                 <div *ngIf="myProfile">
                 <div id="page-content-wrapper">
                         <div class="container-fluid">
@@ -37,14 +39,20 @@
                     </div>
                     </div>
 
-
                     <div *ngIf="showPassword">
                         <div id="page-content-wrapper">
                                 <div class="container-fluid">
                                     <div class="row">
-                                        <div class="col-lg-12" >
+                                        <div class="col-lg-12" >    
                                             <button type="button" class="btn btn-success" (click)="showPasswordMethod()">Show My Password</button>
-                                            <h1>{{demo}}</h1>
+                                            <h1>{{dataFromDrive}}</h1>
+                                            <a href="https://dl.dropboxusercontent.com/s/deroi5nwm6u7gdf/advice.png" class="dropbox-saver"></a>
+                                            
+                                                <div id="pre-auth-section" style="display:none;">
+                                                  <p>This example takes the user through Dropbox's API OAuth flow using <code>Dropbox.getAuthenticationUrl()</code> method [<a href="http://dropbox.github.io/dropbox-sdk-js/Dropbox.html#getAuthenticationUrl">docs</a>] and then uses the generated access token to list the contents of their root directory.</p>
+                                                  <a href="" id="authlink" class="button">Authenticate</a>
+                                                 </div>
+                                                 
                                         </div>
                                     </div>
                                 </div>
@@ -75,7 +83,7 @@
                                                                                                 <input #password type="text" class="form-control" id="password" [value]="randomPassword">
                                                                                   </div>
                                                                              
-                                                                                    <button type="button" class="btn btn-success" (click)="generatePassword()">Generate Random Password</button>
+                                                                                    <button type="button" class="btn btn-success" (click)="generatePassword()" onclick="testDemo()">Generate Random Password</button>
                                                                                     <button type="submit" class="btn btn-success" (click)="submitData(applicationname.value,username.value,password.value)">Submit</button>
                                                                                     <a href="https://dl.dropboxusercontent.com/s/deroi5nwm6u7gdf/advice.png" class="dropbox-saver"></a>
                                                                                     <hr> 
@@ -92,9 +100,8 @@
                     </div>   
             </div>
                 
+                 
             
 
 
-
             
-                

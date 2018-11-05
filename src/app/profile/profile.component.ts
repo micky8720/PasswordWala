@@ -4,6 +4,7 @@ import { Dropbox } from 'dropbox';
 import { HeaderComponent } from '../header/header.component';
 import { Profile } from 'selenium-webdriver/firefox';
 import { Driver } from 'selenium-webdriver/safari';
+//import { token_dropbox} from './../../assets/js/index'
 
 
 
@@ -26,10 +27,28 @@ export class ProfileComponent implements OnInit {
   public message;
   public email;
   public token;
-  public demo;
+  public dataFromDrive="";
+  
   
   //@ViewChild(HeaderComponent) child;
-  constructor() { }
+  print(){
+      console.log("profile ni method...");
+      
+  }
+  x = this.print();
+
+   
+  constructor() {
+
+    
+   }
+   ngOnInit() {
+
+     const dropbox_token = token_dropbox;
+     console.log("Profile ts ma db nu token:" + dropbox_token);
+     
+
+   }
 
   getUserdata($event) {
     this.userData = $event;
@@ -105,6 +124,7 @@ export class ProfileComponent implements OnInit {
   showPasswordMethod(){
     
     var accessToken = this.token;
+    var demo = "";
     console.log("before the get request...");
     var fileID;
     var xhr1 = new XMLHttpRequest();
@@ -164,22 +184,23 @@ export class ProfileComponent implements OnInit {
           xhr2.onload = () => {
               console.log("1313");
               console.log("Getting file data from passwordwala:"+xhr2.response); 
-              this.demo = xhr2.response;
-              console.log("demo variable in onload method: "+this.demo);
-              
-              //console.log(typeof (xhr2.response));
-              
+              this.dataFromDrive = xhr2.response;
+              demo = xhr2.response;
+              console.log("dataFromDrive variable in onload method: "+this.dataFromDrive);
+              console.log("demo in onload method:"+ demo);
           }
           console.log("1414");
           xhr2.send();
-          console.log("onload ni bahar..."+ this.demo);
+          console.log("onload ni bahar...dataFromDrive"+ this.dataFromDrive);
+          console.log("demo outside:"+ demo);
+          
         
     };
     console.log("1515");
     xhr1.send();
 
     console.log("done downloading .." + xhr1.responseText);
-    console.log("demo: " + this.demo);
+    console.log("dataFromDrive: " + this.dataFromDrive);
     
 
   }
@@ -230,74 +251,13 @@ export class ProfileComponent implements OnInit {
         
   }
    
+  
 
   public downloadcsv(data: any, exportFileName: string) {
     let csvData = this.convertToCSV(data);
-    // let blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
-
-    // console.log("blob su che..."+blob.type)
-    
-
-    // File Upload Code
-    // var fileContent = csvData; // As a sample, upload a text file.
-    // console.log("fileContent :: " + Object.values(fileContent));
-    // var file = new Blob([fileContent], {type: 'text/csv'});
-    // var metadata = {
-    //     'title': 'passwordwala.csv',
-    //     'name': 'passwordwala', // Filename at Google Drive
-    //     'mimeType': 'text/csv', // mimeType at Google Drive
-    //     'parents': ['### folder ID ###'], // Folder ID at Google Drive
-    // };
-    
-    // var accessToken = this.token; // Here gapi is used for retrieving the access token.
-    // console.log("accessToken :: " + accessToken);
-    // var form = new FormData();
-    // form.append('metadata', new Blob([JSON.stringify(metadata)]));
-    // // form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
-    // console.log("Form data after metadata :: " , form.getAll('metadata'));
-    // form.append('file', file);
-    // console.log("File Data :: ", file);
-    // console.log("Form Data after appending file:: ", form.getAll('file'));
-    // console.log("Form Data :: " , form.getAll('file'));
-    
-    // var xhr = new XMLHttpRequest();
-    // console.log("Just Before the link::::");
-    
-    // xhr.open('post', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id');
-    
-    // xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-    // xhr.responseType = 'json';
-    // console.log("XHR :: " + Object.values(xhr));
-    // xhr.onload = () => {
-    //     console.log(xhr.response.id); // Retrieve uploaded file ID.
-    // };
-    // //xhr.send(file);
-    // console.log("Form Data just before sending:: " , form.getAll('file'));
-    // xhr.send(form);
-    // console.log("Form Data after sending:: " , form.getAll('file'));
-    // console.log("success for Google Drive.");
-    
-   
-    
-   // console.log("Khali Dropbox nu karyu check ahiya...");
-//  console.log("before the get request...");
- 
-//    xhr.open("GET", "https://www.googleapis.com/drive/v3/files/"+'1A1RguZpYFLyO9qEs-EnnrpikIpzAbDcZs3Gcsc7Z4nE', true);
-//     xhr.setRequestHeader('Authorization','Bearer '+accessToken);
-//     xhr.onload = function(){
-//         console.log(xhr);
-//     }
-//     xhr.send('alt=media');
-//     console.log("after the get request...");
-    
-    
-
-
-
-
-
     var fileContent = csvData; // As a sample, upload a text file.
     var file = new Blob([fileContent], {type: 'text/csv'});
+    var oldData:String ="";
     var metadata = {
       'name': 'passwordwala.csv', // Filename at Google Drive
       'mimeType': 'text/csv', // mimeType at Google Drive
@@ -307,11 +267,75 @@ export class ProfileComponent implements OnInit {
     var accessToken = this.token ;
      // Here gapi is used for retrieving the access token.
     console.log("accesstoken here:"+accessToken);
+
+
+    //first getting the file from google drive if exists any...
+    console.log("before the get request...");
+    var fileID;
+    var oldData:String;
+    var xhr1 = new XMLHttpRequest();
+
+    xhr1.open('GET', 'https://www.googleapis.com/drive/v3/files/');
+    xhr1.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+    xhr1.responseType = 'text';
+    xhr1.onload = () => {
+        
+        console.log("Inside file data:"+xhr1.responseText); // Retrieve uploaded file ID.
+        var exctractedJSON = JSON.parse(xhr1.responseText);
+        var group = xhr1.responseText;
+        console.log("Posts :: " + exctractedJSON.files[0]);
+        var keys = Object.keys(exctractedJSON);
+        keys.forEach(function(key) {
+            if(key == 'files')
+            {
+                console.log("person is files :: " + exctractedJSON[key] );
+                var items = Object.keys(exctractedJSON[key]);
+               
+                items.forEach(function(item) {
+                    console.log("2" + item);
+                  var value = exctractedJSON[key][item];
+                  console.log("3" + value);
+                  console.log("Final " + key+': '+item+' = '+value);
+                  console.log("4" + value.name);
+                  if(value.name == "passwordwala.csv")
+                  {
+                    
+                      fileID = value.id;
+                      console.log("Passwordwala FileID :: " + fileID);
+                  }
+                
+                });
+               
+            }
+            
+          });
+
+          console.log("Getting File data....... ");
+
+          var xhr2 = new XMLHttpRequest();
+    
+          xhr2.open('GET', 'https://www.googleapis.com/drive/v3/files/'+fileID+'?alt=media');
+          xhr2.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+          xhr2.responseType = 'text';
+          xhr2.onload = () => {
+              console.log("Getting file data from passwordwala:"+xhr2.response); 
+              oldData = xhr2.response;
+          }
+          xhr2.send();
+          console.log("onload ni bahar...");
+    };
+    console.log("1515");
+    xhr1.send();
+
+    
+    console.log("done downloading .." + xhr1.responseText);
+   
     
     var form = new FormData();
     form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
     form.append('file', file);
-
+    console.log("old data:"+ oldData);
+    
     var xhr = new XMLHttpRequest();
     xhr.open('post', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id');
     xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
@@ -325,81 +349,6 @@ export class ProfileComponent implements OnInit {
     xhr.send(form);
     console.log("done uploading.."+ xhr.response.id);
 
-    console.log("before the get request...");
-    var fileID;
-    var xhr1 = new XMLHttpRequest();
-    xhr1.open('GET', 'https://www.googleapis.com/drive/v3/files/');
-    console.log("111");
-    
-    xhr1.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-    console.log("22");
-    xhr1.responseType = 'text';
-    console.log("33");
-    xhr1.onload = () => {
-        console.log("44");
-        console.log("Inside file data:"+xhr1.responseText); // Retrieve uploaded file ID.
-        var exctractedJSON = JSON.parse(xhr1.responseText);
-        var group = xhr1.responseText;
-        console.log("Posts :: " + exctractedJSON.files[0]);
-        var keys = Object.keys(exctractedJSON);
-        keys.forEach(function(key) {
-            if(key == 'files')
-            {
-                console.log("person is files :: " + exctractedJSON[key] );
-                var items = Object.keys(exctractedJSON[key]);
-                console.log("1");
-                items.forEach(function(item) {
-                    console.log("2" + item);
-                  var value = exctractedJSON[key][item];
-                  console.log("3" + value);
-                  console.log("Final " + key+': '+item+' = '+value);
-                  console.log("4" + value.name);
-                  if(value.name == "passwordwala.csv")
-                  {
-                    console.log("5555");
-                      fileID = value.id;
-                      console.log("Passwordwala FileID :: " + fileID);
-                  }
-                  console.log("6666");
-                });
-                console.log("7777");
-            }
-            console.log("8888");
-          });
-
-
-
-          console.log("Getting File data....... ");
-
-          var xhr2 = new XMLHttpRequest();
-          console.log("99");
-          xhr2.open('GET', 'https://www.googleapis.com/drive/v3/files/'+fileID+'?alt=media');
-          console.log("101010");
-          xhr2.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-          console.log("1111");
-          xhr2.responseType = 'text';
-          console.log("1212");
-          xhr2.onload = () => {
-            console.log("1313");
-              console.log("Getting file data from passwordwala:"+xhr2.response); 
-          }
-          console.log("1414");
-          xhr2.send();
-          console.log("onload ni bahar...");
-        // names.forEach(function(name) {
-        //     //var items = Object.keys(xhr1.responseText[name]);
-        //     //console.log("Loop name :: " + name);
-        //     //console.log("items in files :: " + items);
-        //     if(name == 'files')
-        //     {
-        //         console.log("Found correct loop." + name.id);
-        //     }
-        //   });
-    };
-    console.log("1515");
-    xhr1.send();
-
-    console.log("done downloading .." + xhr1.responseText);
     
     // xhr.open("GET", "https://www.googleapis.com/drive/v3/files", true);
     //     xhr.setRequestHeader('Authorization','Bearer '+accessToken);
@@ -451,6 +400,7 @@ export class ProfileComponent implements OnInit {
   //   }
 }
 
+
 private convertToCSV(objarray: any) {
     let array = typeof objarray != 'object' ? JSON.parse(objarray) : objarray;
     let str = '';
@@ -493,7 +443,6 @@ public static transform(value: any, filter: any): any {
 }
 
 
-  ngOnInit() {
-  }
+  
 
 }
