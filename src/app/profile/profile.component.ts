@@ -32,6 +32,7 @@ export class ProfileComponent implements OnInit {
   public token_db;
   public dataFromDrive="";
   public dataFromDropbox="";
+  public password="";
   
 
   
@@ -134,15 +135,24 @@ export class ProfileComponent implements OnInit {
 
   showPasswordMethod(){
     
+    
     var accessToken = this.token;
     var accessToken_db = this.token_db;
     var demo = "";
+    var applicationNameFromGoogle="";
+    var usernameFromGoogle="";
+    var passwordFromGoogle="";
+    var applicationNameFromDropbox="";
+    var usernameFromDropbox="";
+    var passwordFromDropbox="";
+
     console.log("before the get request...");
     var fileID;
+    //Get File From Google Drive
+    var erusernameFromGoogle;
     var xhr1 = new XMLHttpRequest();
     xhr1.open('GET', 'https://www.googleapis.com/drive/v3/files/');
-    console.log("111");
-    
+    console.log("111");   
     xhr1.setRequestHeader('Authorization', 'Bearer ' + accessToken);
     console.log("22");
     xhr1.responseType = 'text';
@@ -203,26 +213,24 @@ export class ProfileComponent implements OnInit {
               
               console.log("demo in onload method:"+ demo);
               // Code to Extract data from the String got from Drive.....
-                var password="";
-                var applicationname = "";
-                var username = "";
+                
               var lines = demo.split('\n');
               for(var i = 1;i < lines.length;i++){
                 //code here using lines[i] which will give you each line
                 var words = lines[i].split(',');
                 for(var j = 0;j < words.length;j++){
                     if(j==0){
-                        applicationname = words[j];
-                        console.log("Application name::"+applicationname);
+                        applicationNameFromGoogle = words[j];
+                        console.log("Application name::"+applicationNameFromGoogle);
                         
                     }
                     else if(j==1){
-                        username = words[j];
-                        console.log("User name::"+username);
+                        usernameFromGoogle = words[j];
+                        console.log("User name::"+usernameFromGoogle);
                     }
                     else if(j==2){
-                        password = words[j];      
-                        console.log("Password here::::" +password);               
+                        passwordFromGoogle = words[j];      
+                        console.log("Password here::::" +passwordFromGoogle);               
                     }
 
                 }
@@ -242,7 +250,7 @@ export class ProfileComponent implements OnInit {
     console.log("done downloading .." + xhr1.responseText);
     console.log("dataFromDrive: " + this.dataFromDrive);
 
-    //Get From Dropbox
+    //Get  Data From Dropbox
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'text';
 
@@ -255,6 +263,49 @@ export class ProfileComponent implements OnInit {
       console.log("Got file from dropbox");
       console.log("Response ma su aave che:"+xhr.response);
       this.dataFromDropbox = xhr.response;
+      var lines = xhr.response.split('\n');
+              for(var i = 1;i < lines.length;i++){
+                //code here using lines[i] which will give you each line
+                var words = lines[i].split(',');
+                for(var j = 0;j < words.length;j++){
+                    if(j==0){
+                        applicationNameFromDropbox = words[j];
+                        console.log("Application name::"+applicationNameFromDropbox);
+                        
+                    }
+                    else if(j==1){
+                        usernameFromDropbox = words[j];
+                        console.log("User name::"+usernameFromDropbox);
+                    }
+                    else if(j==2){
+                        passwordFromDropbox = words[j];      
+                        console.log("Password here::::" +passwordFromDropbox);               
+                    }
+
+                }
+                
+            }
+
+            console.log("From Google Original:"+typeof(passwordFromGoogle));
+            console.log("From Google:"+typeof(passwordFromGoogle.replace(/"/g, '')));
+            console.log("From Dropbox Original:"+passwordFromDropbox);
+            console.log("From Dropbox:"+passwordFromDropbox.replace(/"/g, ''));
+
+            var GD = passwordFromGoogle;
+            var DB = passwordFromDropbox;
+            var c = GD + ',' + DB;
+            console.log(GD);
+            //var array = [passwordFromGoogle.replace(/"/g, ''),passwordFromDropbox.replace(/"/g, '')];
+            var array = JSON.parse("[" + c + "]");
+            console.log("Array :"+array);
+            
+            //var comb = secrets.combine([passwordFromGoogle.replace(/"/g, ''),passwordFromDropbox.replace(/"/g, '')]);
+            //var comb = secrets.combine(["801b8a8ac23378387c793542db7037176908b","8026e4dfe46f21ba19398a8e27393e25b3dba"]);+
+            var comb = secrets.combine(array);
+           // var comb = secrets.combine([array]);
+            comb = secrets.hex2str(comb);
+            console.log("Combine thaine::"+comb);
+            this.password = comb;
       
     }
     
@@ -264,6 +315,7 @@ export class ProfileComponent implements OnInit {
       console.log("Error getting from dropbox:"+errorMessage);
       
     }
+    
   };
   
   xhr.open('POST', 'https://content.dropboxapi.com/2/files/download');
@@ -273,6 +325,10 @@ export class ProfileComponent implements OnInit {
   }));
   xhr.send();
 
+
+  //Combining two passwords using shamir's secret
+
+  
   }
 
   submitData(applicationname, username, password){
@@ -287,9 +343,7 @@ export class ProfileComponent implements OnInit {
     console.log("Share Number 1:"+shares[0]);
     console.log("Share Number 2:" + shares[1]);
 
-    var comb = secrets.combine( shares.slice(0,2) );
-    comb = secrets.hex2str(comb);
-    console.log("Combine thaine::"+comb);
+    
     
     
     //Upload Share 1 to google Drive
