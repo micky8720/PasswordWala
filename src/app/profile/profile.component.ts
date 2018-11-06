@@ -6,6 +6,7 @@ import { Profile } from 'selenium-webdriver/firefox';
 import { Driver } from 'selenium-webdriver/safari';
 import { parseCommandLine } from 'typescript';
 //import { token_dropbox} from './../../assets/js/index'
+declare var secrets:any;
 
 
 
@@ -32,10 +33,14 @@ export class ProfileComponent implements OnInit {
   public dataFromDrive="";
   public dataFromDropbox="";
   
+
+  
   
   //@ViewChild(HeaderComponent) child;
   print(){
       console.log("profile ni method...");
+      
+
       
   }
   x = this.print();
@@ -44,9 +49,11 @@ export class ProfileComponent implements OnInit {
   constructor() {
 
     
+    
    }
    ngOnInit() {
 
+     
      const demo = token_dropbox;
      console.log("Profile ts ma db nu token:" + demo);
      this.token_db = demo;
@@ -73,7 +80,7 @@ export class ProfileComponent implements OnInit {
     
     
   // }
-
+ 
   
   onClick(field){
 
@@ -86,7 +93,7 @@ export class ProfileComponent implements OnInit {
     
     
     
-
+ 
     
     
     
@@ -192,7 +199,35 @@ export class ProfileComponent implements OnInit {
               this.dataFromDrive = xhr2.response;
               demo = xhr2.response;
               console.log("dataFromDrive variable in onload method: "+this.dataFromDrive);
+              console.log("type of returned thing:"+ typeof this.dataFromDrive);
+              
               console.log("demo in onload method:"+ demo);
+              // Code to Extract data from the String got from Drive.....
+                var password="";
+                var applicationname = "";
+                var username = "";
+              var lines = demo.split('\n');
+              for(var i = 1;i < lines.length;i++){
+                //code here using lines[i] which will give you each line
+                var words = lines[i].split(',');
+                for(var j = 0;j < words.length;j++){
+                    if(j==0){
+                        applicationname = words[j];
+                        console.log("Application name::"+applicationname);
+                        
+                    }
+                    else if(j==1){
+                        username = words[j];
+                        console.log("User name::"+username);
+                    }
+                    else if(j==2){
+                        password = words[j];      
+                        console.log("Password here::::" +password);               
+                    }
+
+                }
+                
+            }
           }
           console.log("1414");
           xhr2.send();
@@ -203,7 +238,7 @@ export class ProfileComponent implements OnInit {
     };
     console.log("1515");
     xhr1.send();
-
+    
     console.log("done downloading .." + xhr1.responseText);
     console.log("dataFromDrive: " + this.dataFromDrive);
 
@@ -212,7 +247,7 @@ export class ProfileComponent implements OnInit {
     xhr.responseType = 'text';
 
     xhr.onload = () => {
-        
+    
     if (xhr.status === 200) {
     //   var blob = new Blob([xhr.response], {type: ’application/octet-stream’});
     //   FileSaver.saveAs(blob, file.name, true);
@@ -245,6 +280,19 @@ export class ProfileComponent implements OnInit {
     // console.log(applicationname);
     // console.log(username);
     // console.log(password);
+    var passwordHex = secrets.str2hex(password); 
+    var shares = secrets.share(passwordHex,2,2);
+    var password1 = shares[0];
+    var password2 = shares[1];
+    console.log("Share Number 1:"+shares[0]);
+    console.log("Share Number 2:" + shares[1]);
+
+    var comb = secrets.combine( shares.slice(0,2) );
+    comb = secrets.hex2str(comb);
+    console.log("Combine thaine::"+comb);
+    
+    
+    
     let columns= [
       {
           display: 'Application Name',
@@ -372,7 +420,7 @@ export class ProfileComponent implements OnInit {
     var form = new FormData();
     form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
     form.append('file', file);
-    console.log("old data:"+ oldData);
+    
     
     var xhr = new XMLHttpRequest();
     xhr.open('post', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id');
