@@ -293,7 +293,7 @@ export class ProfileComponent implements OnInit {
 
             var GD = passwordFromGoogle;
             var DB = passwordFromDropbox;
-            var c = GD + ',' + DB;
+            var c = GD + "," + DB;
             console.log(GD);
             //var array = [passwordFromGoogle.replace(/"/g, ''),passwordFromDropbox.replace(/"/g, '')];
             var array = JSON.parse("[" + c + "]");
