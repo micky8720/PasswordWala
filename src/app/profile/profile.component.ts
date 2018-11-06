@@ -292,7 +292,7 @@ export class ProfileComponent implements OnInit {
     console.log("Combine thaine::"+comb);
     
     
-    
+    //Upload Share 1 to google Drive
     let columns= [
       {
           display: 'Application Name',
@@ -316,7 +316,7 @@ export class ProfileComponent implements OnInit {
       {
         applicationname:applicationname,
         username:username,
-        password:password
+        password:password1
       }
     ];
     let collection: any[] = [];
@@ -329,14 +329,54 @@ export class ProfileComponent implements OnInit {
             }
             exprtcsv.push(row);
             console.log(exprtcsv);
-            this.downloadcsv(exprtcsv, "password_wala");
+            this.uploadToGoogleDrive(exprtcsv, "password_wala");
         });
         
+         //Upload Share 2 to DropBox
+     columns= [
+        {
+            display: 'Application Name',
+            variable: 'applicationname',
+            filter: 'text',
+        },
+        {
+            display: 'UserName',
+            variable: 'username',
+            filter: 'text'
+        },
+        
+        {
+            display: 'Password',
+            variable: 'password',
+            filter: 'text'
+        }
+      ]
+       data = [
+  
+        {
+          applicationname:applicationname,
+          username:username,
+          password:password2
+        }
+      ];
+       collection = [];
+       exprtcsv  = [];
+          (<any[]>JSON.parse(JSON.stringify(data))).forEach(employee => {
+              let row = new Object();
+              for (let i = 0; i < columns.length; i++) {
+                  let transfrmValue = ProfileComponent.transform(employee[columns[i].variable], columns[i].filter);
+                  row[columns[i].display] = transfrmValue;
+              }
+              exprtcsv.push(row);
+              console.log(exprtcsv);
+              this.uploadToDropBox(exprtcsv, "password_wala");
+          });
+          
   }
    
   
 
-  public downloadcsv(data: any, exportFileName: string) {
+  public uploadToGoogleDrive(data: any, exportFileName: string) {
     let csvData = this.convertToCSV(data);
     var fileContent = csvData; // As a sample, upload a text file.
     var file = new Blob([fileContent], {type: 'text/csv'});
@@ -435,8 +475,25 @@ export class ProfileComponent implements OnInit {
     xhr.send(form);
     console.log("done drive uploading.."+ xhr.response.id);
 
+}
+
+public uploadToDropBox(data: any, exportFileName: string) {
+    let csvData = this.convertToCSV(data);
+    var fileContent = csvData; // As a sample, upload a text file.
+    var file = new Blob([fileContent], {type: 'text/csv'});
+    var oldData:String ="";
+    var metadata = {
+      'name': 'passwordwala.csv', // Filename at Google Drive
+      'mimeType': 'text/csv', // mimeType at Google Drive
+      //'parents': ['### folder ID ###'], // Folder ID at Google Drive
+    } ;
     
    
+    var accessToken_db = this.token_db;
+   
+    
+    console.log("dropbox access token after click:"+accessToken_db);
+    
     
     //Upload to Dropbox...
     var xhr = new XMLHttpRequest();
@@ -468,46 +525,6 @@ export class ProfileComponent implements OnInit {
     }));
     xhr.send(file);
 
-  
-
-
-  
-  
-  
-  
-//   var uploader = new UploaderForGoogleDrive({
-//     file: file.Blob,
-//     token: gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token,
-//     metadata: metadata,
-//     onError: onError,
-//     onComplete: onComplete,
-//     onProgress: onProgress,
-//     params: {
-//         convert: false,
-//         ocr: false
-//     }
-
-// });
-
-// uploader.upload();
-  // if (navigator.msSaveBlob) { // IE 10+
-  //     navigator.msSaveBlob(blob, this.createFileName(exportFileName))
-  //   } 
-  // else {
-  //       let link = document.createElement("a");
-  //       if (link.download !== undefined) { // feature detection
-  //           // Browsers that support HTML5 download attribute
-  //           let url = URL.createObjectURL(blob);
-  //           console.log("url..."+url);
-            
-  //           link.setAttribute("href", url);
-  //           link.setAttribute("download", this.createFileName(exportFileName));
-  //           //link.style = "visibility:hidden";
-  //           document.body.appendChild(link);
-  //           link.click();
-  //           document.body.removeChild(link);
-  //       }
-  //   }
 }
 
 
