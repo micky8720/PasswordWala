@@ -33,6 +33,7 @@ export class ProfileComponent implements OnInit {
   public dataFromDrive="";
   public dataFromDropbox="";
   public password="";
+  public exprtcsv: any[] = [];
   
 
   
@@ -130,7 +131,7 @@ export class ProfileComponent implements OnInit {
     console.log(pass);
     this.randomPassword = pass;
     return pass;
-}
+ }
     
 
   showPasswordMethod(){
@@ -145,6 +146,7 @@ export class ProfileComponent implements OnInit {
     var applicationNameFromDropbox="";
     var usernameFromDropbox="";
     var passwordFromDropbox="";
+    
 
     console.log("before the get request...");
     var fileID;
@@ -158,7 +160,7 @@ export class ProfileComponent implements OnInit {
     xhr1.responseType = 'text';
     console.log("33");
     xhr1.onload = () => {
-        console.log("44");
+        
         console.log("Inside file data:"+xhr1.responseText); // Retrieve uploaded file ID.
         var exctractedJSON = JSON.parse(xhr1.responseText);
         var group = xhr1.responseText;
@@ -336,6 +338,7 @@ export class ProfileComponent implements OnInit {
     // console.log(applicationname);
     // console.log(username);
     // console.log(password);
+    
     var passwordHex = secrets.str2hex(password); 
     var shares = secrets.share(passwordHex,2,2);
     var password1 = shares[0];
@@ -347,47 +350,278 @@ export class ProfileComponent implements OnInit {
     
     
     //Upload Share 1 to google Drive
-    let columns= [
-      {
-          display: 'Application Name',
-          variable: 'applicationname',
-          filter: 'text',
-      },
-      {
-          display: 'UserName',
-          variable: 'username',
-          filter: 'text'
-      },
-      
-      {
-          display: 'Password',
-          variable: 'password',
-          filter: 'text'
-      }
-    ]
-    let data = [
 
-      {
-        applicationname:applicationname,
-        username:username,
-        password:password1
-      }
-    ];
-    let collection: any[] = [];
-    let exprtcsv: any[] = [];
-        (<any[]>JSON.parse(JSON.stringify(data))).forEach(employee => {
-            let row = new Object();
-            for (let i = 0; i < columns.length; i++) {
-                let transfrmValue = ProfileComponent.transform(employee[columns[i].variable], columns[i].filter);
-                row[columns[i].display] = transfrmValue;
+    // Get all the data From Google Drive and then upload the  combined one to the drive...
+
+        //1. Let's Get Data From Drive if there is already a file generated....
+        var accessToken = this.token;
+        var accessToken_db = this.token_db;
+        var demo = "";
+        var applicationNameFromGoogle="";
+        var usernameFromGoogle="";
+        var passwordFromGoogle="";
+        var fileID;
+    //Get File From Google Drive
+    
+    var xhr1 = new XMLHttpRequest();
+    xhr1.open('GET', 'https://www.googleapis.com/drive/v3/files/');
+    console.log("111");   
+    xhr1.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+    console.log("22");
+    xhr1.responseType = 'text';
+    console.log("33");
+    xhr1.onload = () => {
+        
+        console.log("Inside file data:"+xhr1.responseText); // Retrieve uploaded file ID.
+        var exctractedJSON = JSON.parse(xhr1.responseText);
+        var group = xhr1.responseText;
+        console.log("Posts :: " + exctractedJSON.files[0]);
+        var keys = Object.keys(exctractedJSON);
+        keys.forEach(function(key) {
+            if(key == 'files')
+            {
+                console.log("person is files :: " + exctractedJSON[key] );
+                var items = Object.keys(exctractedJSON[key]);
+                console.log("1");
+                items.forEach(function(item) {
+                  console.log("2" + item);
+                  var value = exctractedJSON[key][item];
+                  console.log("3" + value);
+                  console.log("Final " + key+': '+item+' = '+value);
+                  console.log("4" + value.name);
+                  if(value.name == "passwordwala.csv")
+                  {
+                    console.log("5555");
+                    fileID = value.id;
+                    console.log("Passwordwala FileID :: " + fileID);
+                      
+                  }
+                  console.log("6666");
+                });
+                console.log("7777");
             }
-            exprtcsv.push(row);
-            console.log(exprtcsv);
-            this.uploadToGoogleDrive(exprtcsv, "password_wala");
-        });
+            console.log("8888");
+          });
+
+
+
+          console.log("Getting File data....... ");
+          
+          var xhr2 = new XMLHttpRequest();
+          console.log("99");
+          xhr2.open('GET', 'https://www.googleapis.com/drive/v3/files/'+fileID+'?alt=media');
+          console.log("101010");
+          xhr2.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+          console.log("1111");
+          xhr2.responseType = 'text';
+          console.log("1212");
+          
+          xhr2.onload = () => {
+              console.log("1313:"+password);
+              console.log("Getting file data from passwordwala:"+xhr2.response); 
+              this.dataFromDrive = xhr2.response;
+              demo = xhr2.response;
+              console.log("dataFromDrive variable in onload method: "+this.dataFromDrive);
+              console.log("type of returned thing:"+ typeof this.dataFromDrive);
+              
+              console.log("demo in onload method:"+ demo);
+              // Code to Extract data from the String got from Drive.....
+
+              let columns= [
+                {
+                    display: 'Application Name',
+                    variable: 'applicationname',
+                    filter: 'text',
+                },
+                {
+                    display: 'UserName',
+                    variable: 'username',
+                    filter: 'text'
+                },
+                
+                {
+                    display: 'Password',
+                    variable: 'password',
+                    filter: 'text'
+                }
+              ]
+              let data = [
+          
+                {
+                  applicationname:applicationname,
+                  username:username,
+                  password:password1
+                },
+                // {
+                //   applicationname:"Raaz",
+                //   username:"raaz",
+                //   password:"raaz"  
+
+                // }
+              
+              ];
+                
+              var lines = demo.split('\n');
+           
+              
+              var words = []
+              for(var i = 1;i < lines.length-1;i++){
+                //code here using lines[i] which will give you each line
+                console.log("Lined::"+lines[i]);
+                console.log("Test Regex:"+lines[i].split(',')[0]);
+                
+                 words = lines[i].split(',');
+                 console.log("words"+words[0]);
+                 console.log("words::"+words[1]);
+                 
+                 
+                for(var j = 0;j < words.length;j++){
+                    if(j==0){
+                        applicationNameFromGoogle = words[j];
+                        console.log("Application name::"+applicationNameFromGoogle);
+                        
+                    }
+                    else if(j==1){
+                        usernameFromGoogle = words[j];
+                        console.log("User name::"+usernameFromGoogle);
+                    }
+                    else if(j==2){
+                        passwordFromGoogle = words[j];      
+                        console.log("Password here::::" +passwordFromGoogle);               
+                    }
+
+                }
+                var pwdObject = {
+                    applicationname:applicationNameFromGoogle,
+                    username:usernameFromGoogle,
+                    password:passwordFromGoogle
+                }
+                if(fileID!=null){
+                data.push(pwdObject);
+                console.log("Call thai if method");
+                
+                }
+                console.log("pwdObject here:"+JSON.stringify(pwdObject));
+                console.log("Data Array::"+data);
+                
+                
+
+            }
+                console.log("Last Chek"+passwordFromGoogle+" and "+password);
+                
+                  let collection: any[] = [];
+                  let exprtcsv: any[] = [];
+                      (<any[]>JSON.parse(JSON.stringify(data)).forEach(employee => {
+                          let row = new Object();
+                          console.log("Row Value :: " + row);
+                          console.log("Employee :: " + JSON.stringify(employee));
+                          console.log("Column Length :: " + columns.length);
+            
+                          for (let i = 0; i < columns.length; i++) {
+                              let transfrmValue = ProfileComponent.transform(employee[columns[i].variable], columns[i].filter);
+                              console.log("Inside Loop columns Variable for " + i + " is "+ columns[i].variable + " and filter is :: " + columns[i].filter);
+                              row[columns[i].display] = transfrmValue;
+                              console.log("TransfrmValue::"+transfrmValue);
+                              
+                              console.log("updating row value for column display as " + columns[i].display + " So new row value is " + JSON.stringify(row));
+                          }
+                          
+                         
+                          
+                        //  // var properties = words.split(', ');
+                        //   var obj = {};
+                        //   properties.forEach(function(property) {
+                        //   var tup = property.split(':');
+                        //   obj[tup[0]] = tup[1];
+                        //   });
+                        // var driveData = {...words}; 
+                        // console.log("Pehla emnem print karai e: "+JSON.stringify(driveData));
+                        
+                    
+                        
+                        exprtcsv.push(row);
+
+                         // console.log("After converting to obj:"+typeof(JSON.parse('"'+this.dataFromDrive+'"')));
+                         // console.log("Navi rit ma obj"+obj);
+                          console.log("row herE:"+row);
+                          console.log("Words:"+words);
+                          console.log("exprtcsv ni type:"+typeof(exprtcsv));
+                          console.log("exprtcsv stringify"+JSON.stringify(exprtcsv));
+                          
+                          console.log("Words ni type:"+typeof(words));
+                          console.log("row ni type:"+typeof(row));
+                          console.log("datafromgoogle ni type:"+typeof(this.dataFromDrive));
+                          //console.log("exprtcsv here:"+exprtcsv[1][1]);
+                          
+                          
+                        }));  
+                          
+                          this.uploadToGoogleDrive(exprtcsv, "password_wala");
+                          // console.log("Data ahiya print kari joi e..."+JSON.stringify(data));
+                          // console.log("Data ni type ahiya print kari joi e..."+ typeof(JSON.stringify(data)));
+                          // console.log("Data from google :"+this.dataFromDrive);
+                          
+                          // console.log("Final Data:"+JSON.stringify(data).concat(this.dataFromDrive));
+                        //   console.log("Just New Data:"+JSON.stringify(data));
+                        //   console.log("Just old data:"+this.dataFromDrive);
+                          
+                        // //   console.log("Converted to Object from drive:"+JSON.parse(this.dataFromDrive));
+                          
+                          
+                        //   console.log("Final data:"+JSON.stringify(data).concat(this.dataFromDrive));
+              
+                          
+                          // console.log("Now Combining two data...");
+                          // console.log("expertcsv print karai e.."+exprtcsv[0].Password);
+                          
+                          // console.log("Type of dataFromDrive"+typeof(this.dataFromDrive)); // String
+                          // console.log("Type of exprtCsv"+typeof(exprtcsv)); //Object
+                          
+                          // console.log("Combined Check:"+this.dataFromDrive.concat(exprtcsv.toString()));
+                          
+                     
+                
+            
+          }
+          console.log("1414");
+          xhr2.send();
+          console.log("onload ni bahar...dataFromDrive"+ this.dataFromDrive);
+          console.log("demo outside:"+ demo);
+          
+        
+    };
+    console.log("1515");
+    xhr1.send();
+    
+    // console.log("done downloading .." + xhr1.responseText);
+    // console.log("dataFromDrive: " + this.dataFromDrive);
+    // console.log("sau thi bahar exprtcsv stringify"+JSON.stringify(this.exprtcsv));
+
+
+        //2.Now Let's combine this already available data and the new data
+    
+            
+          //  this.uploadToGoogleDrive(exprtcsv, "password_wala");
+            // console.log("Data ahiya print kari joi e..."+JSON.stringify(data));
+            // console.log("Data ni type ahiya print kari joi e..."+ typeof(JSON.stringify(data)));
+            // console.log("Data from google :"+this.dataFromDrive);
+            
+            // console.log("Final Data:"+JSON.stringify(data).concat(this.dataFromDrive));
+            // console.log("Final data:"+JSON.stringify(data).concat(this.dataFromDrive));
+
+            
+            // console.log("Now Combining two data...");
+            // console.log("expertcsv print karai e.."+exprtcsv[0].Password);
+            
+            // console.log("Type of dataFromDrive"+typeof(this.dataFromDrive)); // String
+            // console.log("Type of exprtCsv"+typeof(exprtcsv)); //Object
+            
+            // console.log("Combined Check:"+this.dataFromDrive.concat(exprtcsv.toString()));
+            
+        
         
          //Upload Share 2 to DropBox
-     columns= [
+    let columns= [
         {
             display: 'Application Name',
             variable: 'applicationname',
@@ -405,7 +639,7 @@ export class ProfileComponent implements OnInit {
             filter: 'text'
         }
       ]
-       data = [
+     let  data = [
   
         {
           applicationname:applicationname,
@@ -413,13 +647,17 @@ export class ProfileComponent implements OnInit {
           password:password2
         }
       ];
-       collection = [];
-       exprtcsv  = [];
+      let collection = [];
+      let exprtcsv  = [];
           (<any[]>JSON.parse(JSON.stringify(data))).forEach(employee => {
               let row = new Object();
+             
               for (let i = 0; i < columns.length; i++) {
+                  console.log("Inside Loop columns Variable for " + i + " is "+ columns[i].variable + " and filter is :: " + columns[i].filter);
                   let transfrmValue = ProfileComponent.transform(employee[columns[i].variable], columns[i].filter);
+                  console.log("TransformValue :: " + transfrmValue);
                   row[columns[i].display] = transfrmValue;
+                  console.log("updating row value for column display as " + columns[i].display + " So new row value is " + row);
               }
               exprtcsv.push(row);
               console.log(exprtcsv);
@@ -431,6 +669,8 @@ export class ProfileComponent implements OnInit {
   
 
   public uploadToGoogleDrive(data: any, exportFileName: string) {
+     console.log("Upload google drive mthod:"+this.dataFromDrive);
+      
     let csvData = this.convertToCSV(data);
     var fileContent = csvData; // As a sample, upload a text file.
     var file = new Blob([fileContent], {type: 'text/csv'});
@@ -450,65 +690,6 @@ export class ProfileComponent implements OnInit {
     
 
     // //first getting the file from google drive if exists any...
-    // console.log("before the get request...");
-    // var fileID;
-    // var oldData:String;
-    // var xhr1 = new XMLHttpRequest();
-
-    // xhr1.open('GET', 'https://www.googleapis.com/drive/v3/files/');
-    // xhr1.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-    // xhr1.responseType = 'text';
-    // xhr1.onload = () => {
-        
-    //     console.log("Inside file data:"+xhr1.responseText); // Retrieve uploaded file ID.
-    //     var exctractedJSON = JSON.parse(xhr1.responseText);
-    //     var group = xhr1.responseText;
-    //     console.log("Posts :: " + exctractedJSON.files[0]);
-    //     var keys = Object.keys(exctractedJSON);
-    //     keys.forEach(function(key) {
-    //         if(key == 'files')
-    //         {
-    //             console.log("person is files :: " + exctractedJSON[key] );
-    //             var items = Object.keys(exctractedJSON[key]);
-               
-    //             items.forEach(function(item) {
-    //                 console.log("2" + item);
-    //               var value = exctractedJSON[key][item];
-    //               console.log("3" + value);
-    //               console.log("Final " + key+': '+item+' = '+value);
-    //               console.log("4" + value.name);
-    //               if(value.name == "passwordwala.csv")
-    //               {
-                    
-    //                   fileID = value.id;
-    //                   console.log("Passwordwala FileID :: " + fileID);
-    //               }
-                
-    //             });
-               
-    //         }
-            
-    //       });
-
-    //       console.log("Getting File data....... ");
-
-    //       var xhr2 = new XMLHttpRequest();
-    
-    //       xhr2.open('GET', 'https://www.googleapis.com/drive/v3/files/'+fileID+'?alt=media');
-    //       xhr2.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-    //       xhr2.responseType = 'text';
-    //       xhr2.onload = () => {
-    //           console.log("Getting file data from passwordwala:"+xhr2.response); 
-    //           oldData = xhr2.response;
-    //       }
-    //       xhr2.send();
-    //       console.log("onload ni bahar...");
-    // };
-    // console.log("1515");
-    // xhr1.send();
-
-    
-    // console.log("done downloading .." + xhr1.responseText);
    
     // Upload to Google Drive....
     var form = new FormData();
@@ -517,7 +698,8 @@ export class ProfileComponent implements OnInit {
     
     
     var xhr = new XMLHttpRequest();
-    xhr.open('post', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id');
+     xhr.open('post', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id');
+    //xhr.open('PATCH', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id');
     xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
     xhr.responseType = 'text';
     xhr.onload = () => {
@@ -613,6 +795,8 @@ private createFileName(exportFileName: string): string {
 
 public static transform(value: any, filter: any): any {
     if (value == null) { return '' }
+    console.log("Value in transform function is " + value);
+    console.log("Filter in transform function is " + filter);
     switch (filter) {
         case 'text':
             return value;
