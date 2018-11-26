@@ -410,6 +410,7 @@ export class ProfileComponent implements OnInit {
           var xhr2 = new XMLHttpRequest();
           console.log("99");
           xhr2.open('GET', 'https://www.googleapis.com/drive/v3/files/'+fileID+'?alt=media');
+          
           console.log("101010");
           xhr2.setRequestHeader('Authorization', 'Bearer ' + accessToken);
           console.log("1111");
@@ -491,12 +492,13 @@ export class ProfileComponent implements OnInit {
                     }
 
                 }
-                var pwdObject = {
-                    applicationname:applicationNameFromGoogle,
-                    username:usernameFromGoogle,
-                    password:passwordFromGoogle
-                }
+                
                 if(fileID!=null){
+                    var pwdObject = {
+                        applicationname:JSON.parse(applicationNameFromGoogle),
+                        username:JSON.parse(usernameFromGoogle),
+                        password:JSON.parse(passwordFromGoogle)
+                    }
                 data.push(pwdObject);
                 console.log("Call thai if method");
                 
@@ -556,7 +558,7 @@ export class ProfileComponent implements OnInit {
                           
                         }));  
                           
-                          this.uploadToGoogleDrive(exprtcsv, "password_wala");
+                          this.uploadToGoogleDrive(exprtcsv, "password_wala",fileID);
                           // console.log("Data ahiya print kari joi e..."+JSON.stringify(data));
                           // console.log("Data ni type ahiya print kari joi e..."+ typeof(JSON.stringify(data)));
                           // console.log("Data from google :"+this.dataFromDrive);
@@ -668,8 +670,10 @@ export class ProfileComponent implements OnInit {
    
   
 
-  public uploadToGoogleDrive(data: any, exportFileName: string) {
-     console.log("Upload google drive mthod:"+this.dataFromDrive);
+  public uploadToGoogleDrive(data: any, exportFileName: string,fileID:string) {
+    
+     console.log("uploadtogoogledrive ma fileID:"+fileID);
+     
       
     let csvData = this.convertToCSV(data);
     var fileContent = csvData; // As a sample, upload a text file.
@@ -698,8 +702,12 @@ export class ProfileComponent implements OnInit {
     
     
     var xhr = new XMLHttpRequest();
-     xhr.open('post', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id');
-    //xhr.open('PATCH', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id');
+    if(fileID==null){
+    xhr.open('post', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id');
+    }
+    else{
+    xhr.open('put','https://www.googleapis.com/upload/drive/v2/files/'+fileID);
+    }
     xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
     xhr.responseType = 'text';
     xhr.onload = () => {
