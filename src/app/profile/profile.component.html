@@ -1,105 +1,151 @@
 <script type="text/javascript" src="assets/js/index.js"></script>
 
-<app-header (sendUserdata)="getUserdata($event)" (sendToken)="getToken($event)" > </app-header>
+<app-header (sendUserdata)="getUserdata($event)" (sendToken)="getToken($event)">
+</app-header>
 
-                                                                                
 <div id="wrapper">
-                <!-- Sidebar -->
-                <div id="sidebar-wrapper">
-                    <ul class="sidebar-nav">
-                        <li>
-                            <a (click)="onClick('myProfile')"> My Profile </a>
-                        </li>
-                        <li> 
-                            <a (click)="onClick('addPassword')">Add Password</a>
-                        </li>
-                        <li>
-                            <a (click)="onClick('showPassword')" >Show Password</a>
-                        </li>
-                        <li>
-                            <a (click)="logOut()">Logout</a>
-                        </li>
-                        
-                    </ul>
+  <!-- Sidebar -->
+  <div id="sidebar-wrapper">
+    <ul class="sidebar-nav">
+      <li><a (click)="onClick('myProfile')"> My Profile </a></li>
+      <li><a (click)="onClick('addPassword')">Add Password</a></li>
+      <li><a (click)="onClick('showPassword')">Show Password</a></li>
+      <li><a (click)="logOut()">Logout</a></li>
+    </ul>
+  </div>
+
+  <div *ngIf="myProfile">
+    <div id="page-content-wrapper">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <h1>Hello, {{ userData.ofa }}</h1>
+            <img src="{{userData.Paa}}" alt="" />
+            <p>{{ userData.U3 }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showPassword">
+    <div id="page-content-wrapper">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <button
+              type="button"
+              class="btn btn-success"
+              (click)="showPasswordMethod()"
+            >
+              Show My Password
+            </button>
+            <h1>{{ dataFromDrive }}</h1>
+            <h4>{{ dataFromDropbox }}</h4>
+            <h3>{{ passwordFinal }}</h3>
+            <table class="table">
+                <thead class="thead-dark">
+                  <tr>
+                    
+                    <th scope="col">Application Name</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Password</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let element of dataToShow">
+                    
+                    <td>{{ element.applicationname }}</td>
+                    <td>{{ element.username }}</td>
+                    <td>{{ element.password }}</td>
+                  </tr>
+                </tbody>
+              </table>
             
-                     
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="addPassword">
+    <div id="page-content-wrapper">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="container">
+              <h1>Submit Password</h1>
+              <form>
+                <div class="form-group">
+                  <label for="name">Application Name</label>
+                  <input
+                    #applicationname
+                    type="text"
+                    class="form-control"
+                    id="applicationname"
+                    required
+                  />
                 </div>
-                
-                <div *ngIf="myProfile">
-                <div id="page-content-wrapper">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-lg-12" >
-                                    <h1>Hello, {{userData.ofa}}</h1>
-                                     <img src="{{userData.Paa}}" alt="">  
-                                     <p>{{userData.U3}}</p> 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
 
-                    <div *ngIf="showPassword">
-                        <div id="page-content-wrapper">
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        <div class="col-lg-12" >    
-                                            <button type="button" class="btn btn-success" (click)="showPasswordMethod()">Show My Password</button>
-                                            <h1>{{dataFromDrive}}</h1>
-                                            <h4>{{dataFromDropbox}}</h4>
-                                            <h3>{{password}}</h3>
-                                            
-                                                 
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            </div>
+                <div class="form-group">
+                  <label for="alterEgo">Username</label>
+                  <input
+                    #username
+                    type="text"
+                    class="form-control"
+                    id="username"
+                    required
+                  />
+                </div>
 
+                <div class="form-group">
+                  <label for="alterEgo">Password</label>
+                  <input
+                    #password
+                    type="text"
+                    class="form-control"
+                    id="password"
+                    [value]="randomPassword"
+                  />
+                </div>
 
-                    <div *ngIf="addPassword">
-                                <div id="page-content-wrapper">
-                                        <div class="container-fluid">
-                                            <div class="row">
-                                                <div class="col-lg-12" >
-                                                                <div class="container">
-                                                                                <h1>Submit Password</h1>
-                                                                                <form>
-                                                                                  <div class="form-group">
-                                                                                    <label for="name">Application Name</label>
-                                                                                    <input #applicationname type="text" class="form-control" id="applicationname" required >
-                                                                                  </div>
-                                                                             
-                                                                                  <div class="form-group">
-                                                                                    <label for="alterEgo">Username</label>
-                                                                                    <input #username type="text" class="form-control" id="username" required>
-                                                                                  </div>
-
-                                                                                  <div class="form-group">
-                                                                                                <label for="alterEgo">Password</label>
-                                                                                                <input #password type="text" class="form-control" id="password" [value]="randomPassword">
-                                                                                  </div>
-                                                                             
-                                                                                    <button type="button" class="btn btn-success" (click)="generatePassword()" onclick="testDemo()">Generate Random Password</button>
-                                                                                    <button type="submit" class="btn btn-success" (click)="submitData(applicationname.value,username.value,password.value)">Submit</button>
-                                                                                    <a href="https://dl.dropboxusercontent.com/s/deroi5nwm6u7gdf/advice.png" class="dropbox-saver"></a>
-                                                                                    <hr> 
-                                                                                    <h1>{{dataFromDrive}}</h1>
-                                                                                    <a href="https://dl.dropboxusercontent.com/s/deroi5nwm6u7gdf/advice.png" class="dropbox-saver">test</a>
-                                                                                </form>
-                                                                                    
-                                                                </div>
-                                                </div>
-                                            </div>
-                                            
-                                        </div>
-
-                                </div>
-                    </div>   
+                <button
+                  type="button"
+                  class="btn btn-success"
+                  (click)="generatePassword()"
+                  onclick="testDemo()"
+                >
+                  Generate Random Password
+                </button>
+                <button
+                  type="submit"
+                  class="btn btn-success"
+                  (click)="
+                    submitData(
+                      applicationname.value,
+                      username.value,
+                      password.value
+                    )
+                  "
+                >
+                  Submit
+                </button>
+                <a
+                  href="https://dl.dropboxusercontent.com/s/deroi5nwm6u7gdf/advice.png"
+                  class="dropbox-saver"
+                ></a>
+                <hr />
+                <h1>{{ dataFromDrive }}</h1>
+                <a
+                  href="https://dl.dropboxusercontent.com/s/deroi5nwm6u7gdf/advice.png"
+                  class="dropbox-saver"
+                  >test</a
+                >
+              </form>
             </div>
-                
-                 
-            
-
-
-            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
