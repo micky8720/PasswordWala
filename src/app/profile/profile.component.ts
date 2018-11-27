@@ -365,42 +365,42 @@ export class ProfileComponent implements OnInit {
     
     var xhr1 = new XMLHttpRequest();
     xhr1.open('GET', 'https://www.googleapis.com/drive/v3/files/');
-    console.log("111");   
+    console.log("GD submit Data xhr1:111");   
     xhr1.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-    console.log("22");
+    console.log("GD submit Data xhr1:22");
     xhr1.responseType = 'text';
-    console.log("33");
+    console.log("GD submit Data xhr1:33");
     xhr1.onload = () => {
         
-        console.log("Inside file data:"+xhr1.responseText); // Retrieve uploaded file ID.
+        console.log("GD submit Data xhr1:Inside file data:"+xhr1.responseText); // Retrieve uploaded file ID.
         var exctractedJSON = JSON.parse(xhr1.responseText);
         var group = xhr1.responseText;
-        console.log("Posts :: " + exctractedJSON.files[0]);
+        console.log("GD submit Data xhr1:Posts :: " + exctractedJSON.files[0]);
         var keys = Object.keys(exctractedJSON);
         keys.forEach(function(key) {
             if(key == 'files')
             {
-                console.log("person is files :: " + exctractedJSON[key] );
+                console.log("GD submit Data xhr1:person is files :: " + exctractedJSON[key] );
                 var items = Object.keys(exctractedJSON[key]);
-                console.log("1");
+                console.log("GD submit Data xhr1:1");
                 items.forEach(function(item) {
-                  console.log("2" + item);
+                  console.log("GD submit Data xhr1:2" + item);
                   var value = exctractedJSON[key][item];
-                  console.log("3" + value);
-                  console.log("Final " + key+': '+item+' = '+value);
-                  console.log("4" + value.name);
+                  console.log("GD submit Data xhr1:3" + value);
+                  console.log("GD submit Data xhr1:Final " + key+': '+item+' = '+value);
+                  console.log("GD submit Data xhr1:4" + value.name);
                   if(value.name == "passwordwala.csv")
                   {
                     console.log("5555");
                     fileID = value.id;
-                    console.log("Passwordwala FileID :: " + fileID);
+                    console.log("GD submit Data xhr1:Passwordwala FileID :: " + fileID);
                       
                   }
-                  console.log("6666");
+                  console.log("GD submit Data xhr1:6666");
                 });
-                console.log("7777");
+                console.log("GD submit Data xhr1:7777");
             }
-            console.log("8888");
+            console.log("GD submit Data xhr1:8888");
           });
 
 
@@ -408,24 +408,24 @@ export class ProfileComponent implements OnInit {
           console.log("Getting File data....... ");
           
           var xhr2 = new XMLHttpRequest();
-          console.log("99");
+          console.log("GD submit Data xhr2:99");
           xhr2.open('GET', 'https://www.googleapis.com/drive/v3/files/'+fileID+'?alt=media');
           
-          console.log("101010");
+          console.log("GD submit Data xhr2:101010");
           xhr2.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-          console.log("1111");
+          console.log("GD submit Data xhr2:1111");
           xhr2.responseType = 'text';
-          console.log("1212");
+          console.log("GD submit Data xhr2:1212");
           
           xhr2.onload = () => {
-              console.log("1313:"+password);
-              console.log("Getting file data from passwordwala:"+xhr2.response); 
+              console.log("GD submit Data xhr2:1313:"+password);
+              console.log("GD submit Data xhr2:Getting file data from passwordwala:"+xhr2.response); 
               this.dataFromDrive = xhr2.response;
               demo = xhr2.response;
-              console.log("dataFromDrive variable in onload method: "+this.dataFromDrive);
-              console.log("type of returned thing:"+ typeof this.dataFromDrive);
+              console.log("GD submit Data xhr2:dataFromDrive variable in onload method: "+this.dataFromDrive);
+              console.log("GD submit Data xhr2:type of returned thing:"+ typeof this.dataFromDrive);
               
-              console.log("demo in onload method:"+ demo);
+              console.log("GD submit Data xhr2:demo in onload method:"+ demo);
               // Code to Extract data from the String got from Drive.....
 
               let columns= [
@@ -468,27 +468,27 @@ export class ProfileComponent implements OnInit {
               var words = []
               for(var i = 1;i < lines.length-1;i++){
                 //code here using lines[i] which will give you each line
-                console.log("Lined::"+lines[i]);
-                console.log("Test Regex:"+lines[i].split(',')[0]);
+                console.log("GD submit Data xhr2:Lined::"+lines[i]);
+                console.log("GD submit Data xhr2:Test Regex:"+lines[i].split(',')[0]);
                 
                  words = lines[i].split(',');
-                 console.log("words"+words[0]);
-                 console.log("words::"+words[1]);
+                 console.log("GD submit Data xhr2:words"+words[0]);
+                 console.log("GD submit Data xhr2:words::"+words[1]);
                  
                  
                 for(var j = 0;j < words.length;j++){
                     if(j==0){
                         applicationNameFromGoogle = words[j];
-                        console.log("Application name::"+applicationNameFromGoogle);
+                        console.log("GD submit Data xhr2:Application name::"+applicationNameFromGoogle);
                         
                     }
                     else if(j==1){
                         usernameFromGoogle = words[j];
-                        console.log("User name::"+usernameFromGoogle);
+                        console.log("GD submit Data xhr2:User name::"+usernameFromGoogle);
                     }
                     else if(j==2){
                         passwordFromGoogle = words[j];      
-                        console.log("Password here::::" +passwordFromGoogle);               
+                        console.log("GD submit Data xhr2:Password here::::" +passwordFromGoogle);               
                     }
 
                 }
@@ -500,32 +500,32 @@ export class ProfileComponent implements OnInit {
                         password:JSON.parse(passwordFromGoogle)
                     }
                 data.push(pwdObject);
-                console.log("Call thai if method");
+                console.log("GD submit Data xhr2:Call thai if method");
                 
                 }
-                console.log("pwdObject here:"+JSON.stringify(pwdObject));
-                console.log("Data Array::"+data);
+                console.log("GD submit Data xhr2:pwdObject here:"+JSON.stringify(pwdObject));
+                console.log("GD submit Data xhr2:Data Array::"+data);
                 
                 
 
             }
-                console.log("Last Chek"+passwordFromGoogle+" and "+password);
+              
                 
                   let collection: any[] = [];
                   let exprtcsv: any[] = [];
                       (<any[]>JSON.parse(JSON.stringify(data)).forEach(employee => {
                           let row = new Object();
-                          console.log("Row Value :: " + row);
-                          console.log("Employee :: " + JSON.stringify(employee));
-                          console.log("Column Length :: " + columns.length);
+                          console.log("GD submit Data xhr2:Row Value :: " + row);
+                          console.log("GD submit Data xhr2:Employee :: " + JSON.stringify(employee));
+                          console.log("GD submit Data xhr2:Column Length :: " + columns.length);
             
                           for (let i = 0; i < columns.length; i++) {
                               let transfrmValue = ProfileComponent.transform(employee[columns[i].variable], columns[i].filter);
-                              console.log("Inside Loop columns Variable for " + i + " is "+ columns[i].variable + " and filter is :: " + columns[i].filter);
+                              console.log("GD submit Data xhr2:Inside Loop columns Variable for " + i + " is "+ columns[i].variable + " and filter is :: " + columns[i].filter);
                               row[columns[i].display] = transfrmValue;
-                              console.log("TransfrmValue::"+transfrmValue);
+                              console.log("GD submit Data xhr2:TransfrmValue::"+transfrmValue);
                               
-                              console.log("updating row value for column display as " + columns[i].display + " So new row value is " + JSON.stringify(row));
+                              console.log("GD submit Data xhr2:updating row value for column display as " + columns[i].display + " So new row value is " + JSON.stringify(row));
                           }
                           
                          
@@ -587,84 +587,156 @@ export class ProfileComponent implements OnInit {
           }
           console.log("1414");
           xhr2.send();
-          console.log("onload ni bahar...dataFromDrive"+ this.dataFromDrive);
-          console.log("demo outside:"+ demo);
+         
           
         
     };
     console.log("1515");
     xhr1.send();
     
-    // console.log("done downloading .." + xhr1.responseText);
-    // console.log("dataFromDrive: " + this.dataFromDrive);
-    // console.log("sau thi bahar exprtcsv stringify"+JSON.stringify(this.exprtcsv));
 
 
-        //2.Now Let's combine this already available data and the new data
+
     
-            
-          //  this.uploadToGoogleDrive(exprtcsv, "password_wala");
-            // console.log("Data ahiya print kari joi e..."+JSON.stringify(data));
-            // console.log("Data ni type ahiya print kari joi e..."+ typeof(JSON.stringify(data)));
-            // console.log("Data from google :"+this.dataFromDrive);
-            
-            // console.log("Final Data:"+JSON.stringify(data).concat(this.dataFromDrive));
-            // console.log("Final data:"+JSON.stringify(data).concat(this.dataFromDrive));
-
-            
-            // console.log("Now Combining two data...");
-            // console.log("expertcsv print karai e.."+exprtcsv[0].Password);
-            
-            // console.log("Type of dataFromDrive"+typeof(this.dataFromDrive)); // String
-            // console.log("Type of exprtCsv"+typeof(exprtcsv)); //Object
-            
-            // console.log("Combined Check:"+this.dataFromDrive.concat(exprtcsv.toString()));
-            
-        
-        
          //Upload Share 2 to DropBox
-    let columns= [
-        {
-            display: 'Application Name',
-            variable: 'applicationname',
-            filter: 'text',
-        },
-        {
-            display: 'UserName',
-            variable: 'username',
-            filter: 'text'
-        },
-        
-        {
-            display: 'Password',
-            variable: 'password',
-            filter: 'text'
+         console.log("Now, Upload to DropBox");  
+         //Get data From DropBOx if Any...
+     
+         var applicationNameFromDropbox="";
+         var usernameFromDropbox="";
+         var passwordFromDropbox="";
+         var fileExists=false;
+         var xhr = new XMLHttpRequest();
+        xhr.responseType = 'text';
+
+        xhr.onload = () => {
+    
+        let columns= [
+            {
+                display: 'Application Name',
+                variable: 'applicationname',
+                filter: 'text',
+            },
+            {
+                display: 'UserName',
+                variable: 'username',
+                filter: 'text'
+            },
+            
+            {
+                display: 'Password',
+                variable: 'password',
+                filter: 'text'
+            }
+          ];
+          var data = [
+      
+            {
+              applicationname:applicationname,
+              username:username,
+              password:password2
+            }
+         
+          
+          ];
+    if (xhr.status === 200) {
+    //   var blob = new Blob([xhr.response], {type: ’application/octet-stream’});
+    //   FileSaver.saveAs(blob, file.name, true);
+      fileExists = true;
+      console.log("Got file from dropbox");
+      console.log("Response ma su aave che:"+xhr.response);
+      this.dataFromDropbox = xhr.response;
+      var lines = xhr.response.split('\n');
+      var words=[]
+              for(var i = 1;i < lines.length-1;i++){
+                //code here using lines[i] which will give you each line
+                 words = lines[i].split(',');
+                for(var j = 0;j < words.length;j++){
+                    if(j==0){
+                        applicationNameFromDropbox = words[j];
+                        console.log("DB Application name::"+applicationNameFromDropbox);
+                        
+                    }
+                    else if(j==1){
+                        usernameFromDropbox = words[j];
+                        console.log("DB User name::"+usernameFromDropbox);
+                    }
+                    else if(j==2){
+                        passwordFromDropbox = words[j];      
+                        console.log("DB Password here::::" +passwordFromDropbox);               
+                    }
+
+                }
+                var pwdObject = {
+                    applicationname:JSON.parse(applicationNameFromDropbox),
+                    username:JSON.parse(usernameFromDropbox),
+                    password:JSON.parse(passwordFromDropbox)
+                }
+            data.push(pwdObject);
+            console.log("Db data Just After Pushing:"+JSON.stringify(data));
+            
+            console.log("DB Upload: Existing data pushed..");
+
+            }
+
+            console.log("DB Data is:"+JSON.stringify(data));
+            
         }
-      ]
-     let  data = [
+
+        else {
+            fileExists = false;
+            var errorMessage = xhr.response || 'Unable to download file';
+            // Upload failed. Do something here with the error.
+            console.log("DB Upload:Error getting from dropbox:"+errorMessage);
+            
+          }
+
+               let collection: any[] = [];
+                  let exprtcsv: any[] = [];
+
+                      (<any[]>JSON.parse(JSON.stringify(data)).forEach(employee => {
+                          let row = new Object();
+                          console.log("DB Data Before Typing:"+JSON.stringify(data));
+                          
+                          console.log("DB Upload:Row Value :: " + row);
+                          console.log("DB Upload:Employee :: " + JSON.stringify(employee));
+                          console.log("DB Upload:Column Length :: " + columns.length);
+            
+                          for (let i = 0; i < columns.length; i++) {
+                              let transfrmValue = ProfileComponent.transform(employee[columns[i].variable], columns[i].filter);
+                              console.log("DB Upload:Inside Loop columns Variable for " + i + " is "+ columns[i].variable + " and filter is :: " + columns[i].filter);
+                              row[columns[i].display] = transfrmValue;
+                              console.log("DB Upload:TransfrmValue::"+transfrmValue);
+                              
+                              console.log("DB Upload:updating row value for column display as " + columns[i].display + " So new row value is " + JSON.stringify(row));
+                          }
+                          exprtcsv.push(row);
+
+                          // console.log("After converting to obj:"+typeof(JSON.parse('"'+this.dataFromDrive+'"')));
+                          // console.log("Navi rit ma obj"+obj);
+                           console.log("DB row herE:"+row);
+                           console.log("DB Words:"+words);
+                           console.log("DB exprtcsv ni type:"+typeof(exprtcsv));
+                           console.log("DB exprtcsv stringify"+JSON.stringify(exprtcsv));
+                           
+                           console.log("DB Words ni type:"+typeof(words));
+                           console.log("DB row ni type:"+typeof(row));
+                           
+                           //console.log("exprtcsv here:"+exprtcsv[1][1]);
+                         }));  
+
+                         this.uploadToDropBox(exprtcsv,"password_wala",fileExists);
+
+          
+    };
+
+    xhr.open('POST', 'https://content.dropboxapi.com/2/files/download');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken_db);
+    xhr.setRequestHeader('Dropbox-API-Arg', JSON.stringify({
+        path: '/passwordwala.csv'
+    }));
+  xhr.send();
   
-        {
-          applicationname:applicationname,
-          username:username,
-          password:password2
-        }
-      ];
-      let collection = [];
-      let exprtcsv  = [];
-          (<any[]>JSON.parse(JSON.stringify(data))).forEach(employee => {
-              let row = new Object();
-             
-              for (let i = 0; i < columns.length; i++) {
-                  console.log("Inside Loop columns Variable for " + i + " is "+ columns[i].variable + " and filter is :: " + columns[i].filter);
-                  let transfrmValue = ProfileComponent.transform(employee[columns[i].variable], columns[i].filter);
-                  console.log("TransformValue :: " + transfrmValue);
-                  row[columns[i].display] = transfrmValue;
-                  console.log("updating row value for column display as " + columns[i].display + " So new row value is " + row);
-              }
-              exprtcsv.push(row);
-              console.log(exprtcsv);
-              this.uploadToDropBox(exprtcsv, "password_wala");
-          });
           
   }
    
@@ -721,7 +793,7 @@ export class ProfileComponent implements OnInit {
 
 }
 
-public uploadToDropBox(data: any, exportFileName: string) {
+public uploadToDropBox(data: any, exportFileName: string,fileExists:boolean) {
     let csvData = this.convertToCSV(data);
     var fileContent = csvData; // As a sample, upload a text file.
     var file = new Blob([fileContent], {type: 'text/csv'});
@@ -740,12 +812,59 @@ public uploadToDropBox(data: any, exportFileName: string) {
     
     
     //Upload to Dropbox...
-    var xhr = new XMLHttpRequest();
+    
+    
+    
+    if(!fileExists){
+        console.log("If file does not Exist");
+        
+        var xhr = new XMLHttpRequest();
 
-    xhr.onload = function() {
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var fileInfo = JSON.parse(xhr.response);
+                console.log("Upload sucees DropBox:"+fileInfo);
+                
+                
+                // Upload succeeded. Do something here with the file info.
+            }
+            else {
+                var errorMessage = xhr.response || 'Unable to upload file';
+                // Upload failed. Do something here with the error.
+                console.log("Dropbox upload error:" +errorMessage);
+                
+            }
+        };
+        
+        xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken_db);
+        xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+        xhr.setRequestHeader('Dropbox-API-Arg', JSON.stringify({
+            path: '/' +  'passwordwala.csv',
+            mode: 'add',
+            autorename: true,
+            mute: false
+        }));
+        xhr.send(file);
+    
+    }
+
+
+    else{
+        
+       // xhr.open('POST', 'https://content.dropboxapi.com/2/files/update');
+      // xhr.open('POST','https://api.dropboxapi.com/2/file_requests/update');
+      var xhr = new XMLHttpRequest();
+     const dataForRequest = {
+        path: '/passwordwala.csv'
+    //    id: '',
+    //    destination: '/passwordwala.csv',
+    }
+      console.log("Delete else part...");
+      xhr.onload = function() {
         if (xhr.status === 200) {
             var fileInfo = JSON.parse(xhr.response);
-            console.log("Upload sucees DropBox:"+fileInfo);
+            console.log("Delete sucees DropBox:"+fileInfo);
             
             
             // Upload succeeded. Do something here with the file info.
@@ -753,21 +872,57 @@ public uploadToDropBox(data: any, exportFileName: string) {
         else {
             var errorMessage = xhr.response || 'Unable to upload file';
             // Upload failed. Do something here with the error.
+            console.log("Dropbox delet error:" +errorMessage);
+            
+        }
+    };
+
+
+        xhr.open('POST', 'https://api.dropboxapi.com/2/files/delete_v2');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken_db);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+   
+        xhr.send(JSON.stringify(dataForRequest));
+
+        //After Deleting upload the new file...
+
+        var xhr_upload = new XMLHttpRequest();
+
+       xhr_upload.onload = function() {
+        if (xhr_upload.status === 200) {
+            var fileInfo = JSON.parse(xhr.response);
+            console.log("Upload sucees DropBox:"+fileInfo);
+            
+            
+            // Upload succeeded. Do something here with the file info.
+        }
+        else {
+            var errorMessage = xhr_upload.response || 'Unable to upload file';
+            // Upload failed. Do something here with the error.
             console.log("Dropbox upload error:" +errorMessage);
             
         }
     };
     
-    xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
-    xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken_db);
-    xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-    xhr.setRequestHeader('Dropbox-API-Arg', JSON.stringify({
+    xhr_upload.open('POST', 'https://content.dropboxapi.com/2/files/upload');
+    xhr_upload.setRequestHeader('Authorization', 'Bearer ' + accessToken_db);
+    xhr_upload.setRequestHeader('Content-Type', 'application/octet-stream');
+    xhr_upload.setRequestHeader('Dropbox-API-Arg', JSON.stringify({
         path: '/' +  'passwordwala.csv',
         mode: 'add',
         autorename: true,
         mute: false
     }));
-    xhr.send(file);
+    xhr_upload.send(file);
+
+
+
+    }
+    //xhr.setRequestHeader('Authorization', 'Bearer ' + 'w-SxwgDWEOAAAAAAAAACGPDEKBr6sH8rmcBFNd58q7_Ea7vKwGv76DGgFhICMLcc');
+   
+
+
+
 
 }
 
