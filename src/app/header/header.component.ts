@@ -19,11 +19,12 @@ declare const gapi: any;
 export class HeaderComponent implements OnInit {
 
   
-  @Input() public isUserLoggedIn: boolean;
+  @Input() public isUserLoggedIn: boolean = false;
   public username = "";
   public socialPlatform;
   public userData;
   public email;
+  
  // @Output() public childEvent = new EventEmitter();
   @Output() sendUserdata = new EventEmitter<object>();
   @Output() sendToken = new EventEmitter();
@@ -43,6 +44,10 @@ export class HeaderComponent implements OnInit {
 
   googleLogin() {
     let googleAuth = gapi.auth2.getAuthInstance();
+    console.log("googleAuth ni type:"+typeof(googleAuth));
+    console.log("GoogleAuth here:"+googleAuth);
+    
+    
     googleAuth.then(() => {
        googleAuth.signIn({scope:'https://www.googleapis.com/auth/drive'}).then(googleUser => {
           console.log(googleUser.getBasicProfile());
@@ -51,13 +56,18 @@ export class HeaderComponent implements OnInit {
           this.sendToken.emit(googleUser.getAuthResponse().access_token);
           this.router.navigate(['./profilepage']);
           this.isUserLoggedIn=true;
+          console.log("isUserLoogIN:"+this.isUserLoggedIn);
+          
           this.username = googleUser.getBasicProfile().ig;
+          
        });
     });
-
+    
     
  }
 
+ 
+ 
 
   logOut(){
 

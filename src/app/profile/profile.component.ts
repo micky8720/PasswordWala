@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from "@angular/core";
+import { Router } from '@angular/router';
 import { log } from "util";
 import { Dropbox } from "dropbox";
 import { HeaderComponent } from "../header/header.component";
@@ -36,7 +37,7 @@ export class ProfileComponent implements OnInit {
   }
   x = this.print();
 
-  constructor() {}
+  constructor(private router:Router) {}
   ngOnInit() {
     const demo = token_dropbox;
     console.log("Profile ts ma db nu token:" + demo);
@@ -324,7 +325,7 @@ export class ProfileComponent implements OnInit {
     var usernameFromGoogle = "";
     var passwordFromGoogle = "";
     var fileID;
-    //Get File From Google Drive
+   // Get File From Google Drive
 
     var xhr1 = new XMLHttpRequest();
     xhr1.open("GET", "https://www.googleapis.com/drive/v3/files/");
@@ -334,6 +335,8 @@ export class ProfileComponent implements OnInit {
     xhr1.responseType = "text";
     console.log("GD submit Data xhr1:33");
     xhr1.onload = () => {
+      console.log("GD upload : xhr1 called...");
+      
       console.log("GD submit Data xhr1:Inside file data:" + xhr1.responseText); // Retrieve uploaded file ID.
       var exctractedJSON = JSON.parse(xhr1.responseText);
       var group = xhr1.responseText;
@@ -369,21 +372,28 @@ export class ProfileComponent implements OnInit {
       });
 
       console.log("Getting File data....... ");
-
       var xhr2 = new XMLHttpRequest();
       console.log("GD submit Data xhr2:99");
+      
+
       xhr2.open(
         "GET",
-        "https://www.googleapis.com/drive/v3/files/" + fileID + "?alt=media"
+        "https://www.googleapis.com/drive/v3/files/"+ fileID + "?alt=media"
       );
-
+   
       console.log("GD submit Data xhr2:101010");
       xhr2.setRequestHeader("Authorization", "Bearer " + accessToken);
       console.log("GD submit Data xhr2:1111");
       xhr2.responseType = "text";
       console.log("GD submit Data xhr2:1212");
-
+      console.log("1414");
+      xhr2.send();
+      console.log("GD Upload:xhr1: Last line");
+      
+     
       xhr2.onload = () => {
+        console.log("GD xhr2 called...");
+        
         console.log("GD submit Data xhr2:1313:" + password);
         console.log(
           "GD submit Data xhr2:Getting file data from passwordwala:" +
@@ -543,28 +553,10 @@ export class ProfileComponent implements OnInit {
         });
 
         this.uploadToGoogleDrive(exprtcsv, "password_wala", fileID);
-        // console.log("Data ahiya print kari joi e..."+JSON.stringify(data));
-        // console.log("Data ni type ahiya print kari joi e..."+ typeof(JSON.stringify(data)));
-        // console.log("Data from google :"+this.dataFromDrive);
-
-        // console.log("Final Data:"+JSON.stringify(data).concat(this.dataFromDrive));
-        //   console.log("Just New Data:"+JSON.stringify(data));
-        //   console.log("Just old data:"+this.dataFromDrive);
-
-        // //   console.log("Converted to Object from drive:"+JSON.parse(this.dataFromDrive));
-
-        //   console.log("Final data:"+JSON.stringify(data).concat(this.dataFromDrive));
-
-        // console.log("Now Combining two data...");
-        // console.log("expertcsv print karai e.."+exprtcsv[0].Password);
-
-        // console.log("Type of dataFromDrive"+typeof(this.dataFromDrive)); // String
-        // console.log("Type of exprtCsv"+typeof(exprtcsv)); //Object
-
-        // console.log("Combined Check:"+this.dataFromDrive.concat(exprtcsv.toString()));
+        
       };
-      console.log("1414");
-      xhr2.send();
+     console.log("LAst line of GD upload: xhr1");
+     
     };
     console.log("1515");
     xhr1.send();
@@ -710,6 +702,8 @@ export class ProfileComponent implements OnInit {
       })
     );
     xhr.send();
+
+    this.router.navigate(['./profilepage']);
   }
 
   public uploadToGoogleDrive(
